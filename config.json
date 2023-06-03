@@ -1,0 +1,5 @@
+{
+    "url": "http://161.97.161.5:7006/swagger/v1/swagger.json",
+    "modelsPath": "src/app/shared/api",
+    "target": "./forms"
+}
