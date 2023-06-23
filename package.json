@@ -1,6 +1,13 @@
 {
   "type": "module",
-  "dependencies": {
-    "request": "^2.88.2"
+  "name": "angular-formsbuilder-generator",
+  "version": "1.0.715",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Ahmed Halawa",
+  "license": "ISC",
+  "description": "Auto Generate Forms Builder Files For Angualr Base On Swagger Generated Scheme",
+  "bin": {
+    "ng-frmGenerator": "./index.js"
   }
 }

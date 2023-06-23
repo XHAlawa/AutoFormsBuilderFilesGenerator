@@ -14,25 +14,19 @@ export default class templateGenerator {
     buildForm(body) {
         let components = body.components.schemas;
         Object.keys(components).forEach(key => {
+            process.stdout.write("\n Working On : " + key);
             let builder = new templateBuilder(this.paresedConfig);
             let properties = components[key]['properties'];
             if (properties == null) return; // Skip
 
             let frm = builder.build(key, properties)
-            fs.writeFileSync(this.paresedConfig.target + "/" + key + ".ts", frm);
+            fs.writeFileSync(this.paresedConfig.formsOutput + "/" + key + ".ts", frm);
         });
-    }
-
-
-
-    writeInterfaces() {
-        fs.writeFileSync(this.paresedConfig.target + "/" + "IFormBuilder.ts", `
-            import { FormArray, FormGroup, FormBuilder } from '@angular/forms';
+        fs.writeFileSync(this.paresedConfig.formsOutput + "/" + "IFormBuilder.ts", `
+            import { FormGroup } from '@angular/forms';
             export interface IFormBuilder<T> {
                 buildForm(model: T): FormGroup;
             }
         `)
     } 
-  
-
 }

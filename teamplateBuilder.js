@@ -7,7 +7,7 @@ export class templateBuilder {
     toBeConvertedAsArray = ``;
     paresedConfig = ``;
     props = ``;
-    toBeInjected = ``;
+    toBeInjected = new Set('');
     importsManager = null;
 
     constructor(paresedConfig) {
@@ -53,7 +53,7 @@ export class ${key}FormBuilder implements IFormBuilder<${key}> {
     form: FormGroup = null as any;
 
     constructor(private fb: FormBuilder
-${this.toBeInjected}
+${this.getToBeInjectedList()}
     ) {
         this.DatePipe = new DatePipe('en-US');
     }
@@ -62,7 +62,7 @@ ${this.toBeInjected}
         this.DatePipe = new DatePipe(culture);
     }
 
-    buildForm(model: ${key}) {
+    buildForm(model: ${key} | null = null) {
         this.form = this.fb.group<${key}>({
             ${this.props}
         });
@@ -78,11 +78,19 @@ ${this.toBeInjected}
                 `
     }
 
-    convertToArray(propName) {
-        this.toBeConvertedAsArray += `this.form.setControl('${propName}', this.fb.array([]));`
+    getToBeInjectedList() {
+        let str = ``;
+        this.toBeInjected.forEach(imp => {
+            str += `${this.helpers.tabs}, ${imp} \n`
+        });
+        return str;
     }
 
-    buildArrayControls(propertyName, ref) {
+    convertToArray(propName) {
+        this.toBeConvertedAsArray += `\n${this.helpers.tabs}this.form.setControl('${propName}', this.fb.array([]));`
+    }
+
+    buildArrayControls(propertyName, ref, refFileName) {
         propertyName = this.helpers.capitalizeFirstLetter(propertyName);
 
         this.arrayControls += `\n
@@ -96,18 +104,21 @@ ${this.toBeInjected}
         this.${propertyName}Array().removeAt(index);
     }
     addNew${propertyName}(model: ${ref} | null = null) {
-        let frm = this.${propertyName.toLowerCase()}Srvc.buildForm(model);
+        let frm = this.${refFileName}Srvc.buildForm(model);
         this.${propertyName}Array().push(frm);
     }
     `;
     }
 
-    createRefArray(propertyName, property, importsManager) {
+    createRefArray(propertyName, property,) {
         let ref = this.replacePath(property.items.$ref);
-        this.toBeInjected += `${this.helpers.tabs},private ${propertyName.toLowerCase()}Srvc: ${this.helpers.capitalizeFirstLetter(propertyName)}FormBuilder \n${this.helpers.tabs}`
-        this.importsManager.import(`${this.helpers.capitalizeFirstLetter(propertyName)}FormBuilder`, this.paresedConfig.target);
+        let refFileName = `${this.helpers.capitalizeFirstLetter(ref)}FormBuilder`;
+        this.toBeInjected.add(`private ${refFileName}Srvc: ${refFileName}`);
+        this.importsManager.import(refFileName,`./${ref}`);
         this.importsManager.import(`${ref}`, this.paresedConfig.modelsPath);
-        this.buildArrayControls(propertyName, ref);
+        this.buildArrayControls(propertyName, ref, refFileName);
+
+        return refFileName;
     }
 
     replacePath(path) {
