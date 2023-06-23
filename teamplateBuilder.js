@@ -29,7 +29,7 @@ export class templateBuilder {
                 this.props += `${propertyName}: [] `;
                 this.convertToArray(propertyName);
                 if (property.items != null && property.items.$ref)
-                    this.createRefArray(propertyName, property);
+                    this.createRefArray(propertyName, property, key);
             } else if (property.$ref) {
                 this.props += `${propertyName}: undefined`;
             } else {
@@ -110,11 +110,12 @@ ${this.getToBeInjectedList()}
     `;
     }
 
-    createRefArray(propertyName, property,) {
+    createRefArray(propertyName, property, key) {
         let ref = this.replacePath(property.items.$ref);
         let refFileName = `${this.helpers.capitalizeFirstLetter(ref)}FormBuilder`;
         this.toBeInjected.add(`private ${refFileName}Srvc: ${refFileName}`);
-        this.importsManager.import(refFileName,`./${ref}`);
+        if (ref != key)
+            this.importsManager.import(refFileName,`./${ref}`);
         this.importsManager.import(`${ref}`, this.paresedConfig.modelsPath);
         this.buildArrayControls(propertyName, ref, refFileName);
 

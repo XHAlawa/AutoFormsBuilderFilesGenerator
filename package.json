@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "name": "angular-formsbuilder-generator",
-  "version": "1.0.715",
+  "name": "angular-formsbuilder-gen",
+  "version": "1.0.0",
   "main": "index.js",
   "keywords": [],
   "author": "Ahmed Halawa",
