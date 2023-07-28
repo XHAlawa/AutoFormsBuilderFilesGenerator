@@ -1,17 +1,18 @@
-export default class fileImportingManager {
-    importedItems = [];
+export default class FileImportingManager {
+    importedItems: { path: string, files: string[] }[];
+    
     constructor() {
         this.importedItems = [];
     }
 
-    createInstance(fileName, Path) {
+    private createInstance(fileName: string, path: string) {
         return { 
-            path: Path,
+            path,
             files: [ fileName ],
         }
     }
 
-    import(fileName, path) {
+    import(fileName: string, path: string) {
         let existPath = this.importedItems.find(x => x.path === path);
         if (existPath) {
             if (existPath.files.findIndex(x => x.toLowerCase() == fileName.toLowerCase()) > -1) {
@@ -38,4 +39,3 @@ export default class fileImportingManager {
         return result;
     }
 }
- 
