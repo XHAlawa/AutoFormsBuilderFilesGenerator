@@ -1,5 +1,5 @@
 {
-  "type": "module",
+  "type": "commonjs",
   "name": "angular-formsbuilder-gen",
   "version": "1.0.0",
   "main": "index.js",
@@ -9,5 +9,12 @@
   "description": "Auto Generate Forms Builder Files For Angualr Base On Swagger Generated Scheme",
   "bin": {
     "ng-frmGenerator": "./index.js"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  },
+  "scripts": {
+    "tsc": "tsc --build --verbose --incremental --watch",
+    "start": "tsc && node ./bin/src/index.js"
   }
 }
