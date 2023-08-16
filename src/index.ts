@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 #!node
-=======
-#!/usr/bin/env node
->>>>>>> d6da32fcc4e59811d7787c32818a6c6c677e68b0
 
 import templateGenerator from './templateGenerator';
 import * as fs from 'fs';

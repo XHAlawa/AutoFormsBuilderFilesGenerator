@@ -6,10 +6,7 @@ import { formBuilderTemplate } from './templates/formBuilder';
 import { IParsedConfig } from './interfaces/IParsedConfig';
 import { helpers } from './helpers';
 import { IBuildServices, ICurrentProp } from './interfaces/ICurrentProp';
-<<<<<<< HEAD
 import { propFunctionsTemplate } from './templates/propsFunctions';
-=======
->>>>>>> d6da32fcc4e59811d7787c32818a6c6c677e68b0
 
 export class templateBuilder {
     arrayControls = ``;
