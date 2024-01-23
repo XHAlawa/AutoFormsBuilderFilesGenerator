@@ -1,4 +1,6 @@
 # Auto Reactive Forms Builder Generator Based On Open Api 
+[![Socket Badge](https://socket.dev/api/badge/npm/package/angular-formsbuilder-gen)](https://socket.dev/npm/package/angular-formsbuilder-gen)
+
 This NPM module generates build form class from an OpenApi, The generated classes follow the principles of Angular. The generated code is compatible with Angular 12+.
 
 Most of angular developers takes time on writeing form group objects or use form builder to generated models based on 
@@ -22,14 +24,19 @@ angular app let's call it **'swagger.json'** which should contains following obj
 
   "modelsPath": "./../api/models",
   "formsOutput": "/src/app/forms"
+  "schemeFile": "E://swagger.json"
 }
 ```
+
 **note** this file will be used also for **ng-openapi-gen** tool [Click here to know more about it](https://www.npmjs.com/package/ng-openapi-gen "Click here to know more about it") in section "Configuration file and CLI arguments"  
 
 our tool carse only about properties "modelsPath,  formsOutput, input"
 - Input: url for open-api scheme json file
+- schemeFile: local path for scheme json file it's hight order execution if it exist 
+              scheme is loaded from local file instead of url even if url is set
 - models: path for generated models **ng-openapi-gen**
 - formsOutput: where should our tool generated formsbuilder classes
+
 
 ### Generate Services And Models
 first we need to generated services and models by using **ng-openapi-gen** 

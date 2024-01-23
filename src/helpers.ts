@@ -8,4 +8,8 @@ export class helpers {
     static normalizeToFormBuilderName(name: string) {
         return helpers.capitalizeFirstLetter(name) + 'FormBuilder';
     }
+
+    static isNullOrEmpty(text: string) {
+        return text == null || text.toString().trim() == '';
+    }
 }

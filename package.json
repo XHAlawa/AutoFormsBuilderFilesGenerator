@@ -1,13 +1,28 @@
 {
   "type": "commonjs",
   "name": "angular-formsbuilder-gen",
-  "version": "1.0.28",
+  "version": "1.0.34`",
   "main": "index.js",
   "keywords": [
     "angular",
+    "form-builder",
+    "form builder",
+    "builder",
+    "scheme",
+    "auto",
+    "formgroup",
+    "form",
+    "formarray",
+    "class",
+    "object",
+    "builder",
     "openapi",
     "codegen",
-    "formbuilder"
+    "formbuilder",
+    "generator",
+    "models",
+    "gen",
+    "form-create"
   ],
   "repository": {
     "type": "git",

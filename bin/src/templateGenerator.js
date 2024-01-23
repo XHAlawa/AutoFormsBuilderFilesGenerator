@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -26,23 +37,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = __importStar(require("fs"));
 var templateBuilder_js_1 = require("./templateBuilder.js");
 var templateGenerator = /** @class */ (function () {
-    function templateGenerator(paresedConfig) {
-        this.paresedConfig = paresedConfig;
-        this.paresedConfig = paresedConfig;
+    function templateGenerator() {
     }
-    templateGenerator.prototype.buildForm = function (body) {
-        var _this = this;
+    templateGenerator.prototype.buildForm = function (body, parsedConfig) {
         var components = body.components.schemas;
         Object.keys(components).forEach(function (key) {
             console.log("\n Working On : " + key);
-            var builder = new templateBuilder_js_1.templateBuilder(_this.paresedConfig);
+            var builder = new templateBuilder_js_1.templateBuilder(parsedConfig);
             var properties = components[key]['properties'];
-            if (properties == null)
-                return; // Skip
+            if (properties == null) {
+                if (components[key].allOf && components[key].allOf.length == 2) {
+                    properties = components[key].allOf[1].properties;
+                    var inhertPath = components[key].allOf[0].$ref.replace('#/components/schemas/', '');
+                    properties = __assign(__assign({}, properties), components[inhertPath].properties);
+                    //check for inherited props
+                }
+                else {
+                    console.log(" .... File Skipped");
+                    return; // Skip it
+                }
+            }
             var frm = builder.build(key, properties);
-            fs.writeFileSync(_this.paresedConfig.formsOutput + "/" + key + ".ts", frm);
+            fs.writeFileSync(parsedConfig.formsOutput + "/" + key + ".ts", frm);
         });
-        fs.writeFileSync(this.paresedConfig.formsOutput + "/" + "IFormBuilder.ts", "\n            import { FormGroup } from '@angular/forms';\n            export interface IFormBuilder<T> {\n                buildForm(model: T): FormGroup;\n            }\n        ");
+        fs.writeFileSync(parsedConfig.formsOutput + "/" + "IFormBuilder.ts", "\n            import { FormGroup } from '@angular/forms';\n            export interface IFormBuilder<T> {\n                buildForm(model: T): FormGroup;\n            }\n        ");
     };
     return templateGenerator;
 }());

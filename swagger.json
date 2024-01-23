@@ -5,6 +5,7 @@
   
   
     "modelsPath": "./../api/models",
-    "formsOutput": "/forms"
+    "formsOutput": "/forms",
+    "schemeFile": "E://swagger.json"
   }
   
