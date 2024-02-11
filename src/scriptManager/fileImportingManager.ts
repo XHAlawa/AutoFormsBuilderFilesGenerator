@@ -1,4 +1,6 @@
-export default class FileImportingManager {
+import scriptServices from "./scriptManager";
+
+export default class FileImportingManager{
     importedItems: { path: string, files: string[] }[];
     
     constructor() {
@@ -28,12 +30,12 @@ export default class FileImportingManager {
     toString() {
         let result = ``;
         this.importedItems.forEach(x => {
-            let line = `import {`;
+            let line = `import { `;
             x.files.forEach(f => {
                 line += `${f}, `;
             });
             line = line.substring(0, line.length - 2); // Remove Last Comma
-            line += `} from '${x.path}';`;
+            line += ` } from '${x.path}';`;
             result += `${line} \n`;
         });
         return result;

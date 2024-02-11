@@ -1,35 +1,23 @@
-import extraScriptManager from "../extraScriptManager";
-import fileImportingManager from "../fileImportingManager";
-import injectServicesManager from "../injectServicesManager";
+import scriptManager from "../scriptManager/scriptManager";
+import fileImportingManager from "../scriptManager/fileImportingManager";
+import injectServicesManager from "../scriptManager/injectServicesManager";
 import { IParsedConfig } from "./IParsedConfig";
 
 export enum IDataType {
     integer = 'integer',
+    number = 'number',
     string = 'string',
     boolean = 'boolean',
-    number = 'number',
-    array = 'array'
+    object = 'object', 
+    null = 'null',
+    array = 'array',
 }
-
 export interface IBuildServices {
     injectManager: injectServicesManager;
-    extraScriptManager: extraScriptManager;
-    afterBuildScript: extraScriptManager;
+    formGroupProps: scriptManager;
+    serviceScripts: scriptManager;
+    afterBuildScript: scriptManager;
     importsManager: fileImportingManager;
-    parsedConfigs: IParsedConfig
-}
-
-export interface ICurrentProp {
-    DtoName: string;
-    PropertyName: string;
-    Services: IBuildServices,
-    Property: {
-        type: IDataType,
-        nullable?: boolean,
-        format?: string,
-        $ref?: string,
-        items?: { // Incase Of Arrays
-            $ref: string
-        }
-    }
+    parsedConfigs: IParsedConfig;
+    components: any;
 }

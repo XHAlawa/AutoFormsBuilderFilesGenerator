@@ -2,9 +2,10 @@ import { helpers } from "../helpers";
 import { IBuildServices } from "../interfaces/ICurrentProp";
 
 export class formBuilderTemplate {
-    static getTemplate(key: string, props: string, services: IBuildServices) {
+    static getTemplate(key: string, services: IBuildServices) {
         return `
 ${services.importsManager.toString()}
+
 @Injectable({ providedIn: 'root' })
 export class ${helpers.normalizeToFormBuilderName(key)} implements IFormBuilder<${key}> {
     DatePipe: DatePipe = null as any;
@@ -26,18 +27,22 @@ export class ${helpers.normalizeToFormBuilderName(key)} implements IFormBuilder<
     }
 
     buildForm(model: ${key} | null = null) {
-       this.form = this.fb.group<${key}>({
-            ${props}
-       });
-       if (model != null) {
-            this.form.patchValue({ ... model });
-       }
-       ${services.afterBuildScript.toString()}
+        
+        this.form = this.fb.group({
+${services.formGroupProps.toString()}
+        });
 
-       return this.form;
+        if (model != null) {
+            this.form.patchValue({ ... model });
+        }
+
+        ${services.afterBuildScript.toString()}
+
+        return this.form;
     }
-    ${services.extraScriptManager.toString()}
+    
+${services.serviceScripts.toString()}
 }
-                `
+`
     }
 }
