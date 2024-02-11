@@ -1,23 +1,24 @@
 import { helpers } from "../helpers";
-import { ICurrentProp } from "../interfaces/ICurrentProp";
+import { SchemaObject } from "../interfaces/schemaObject";
 
 export class arrayMethodsTemplate {
-    public static getTemplate(property: ICurrentProp, caller: string, arrayRef: string) {
+    public static getTemplate(propName: string, arrayRef: string) {
         return`
-    ${property.PropertyName}Array(): FormArray {
-        return this.form.controls['${property.PropertyName}'] as FormArray;
+    ${propName}Array(): FormArray {
+        return this.form.controls['${propName}'] as FormArray;
     }
-    ${property.PropertyName}Controls(): AbstractControl<any, any>[] {
-        return this.${property.PropertyName}Array().controls;  
+    ${propName}Controls(): AbstractControl<any, any>[] {
+        return this.${propName}Array().controls;  
     }
-    delete${property.PropertyName}ByIndex(index: number): void {
-        this.${property.PropertyName}Array().removeAt(index);
+    delete${helpers.capitalizeFirstLetter(propName)}ByIndex(index: number): void {
+        this.${propName}Array().removeAt(index);
     }
-    addNew${property.PropertyName}(model: ${arrayRef} | null = null): FormGroup<any> {
-        let frm = ${caller}.buildForm(model);
-        this.${property.PropertyName}Array().push(frm);
+    addNew${helpers.capitalizeFirstLetter(propName)}(model: ${arrayRef} | null = null): FormGroup<any> {
+        let frm = this.${arrayRef}Srvc.buildForm(model);
+        this.${propName}Array().push(frm);
         return frm;
     }
     `   
     }
+    
 }

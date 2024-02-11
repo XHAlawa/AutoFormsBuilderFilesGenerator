@@ -1,4 +1,4 @@
-import { helpers } from "./helpers";
+import { helpers } from "../helpers";
 
 export default class injectServicesManager {
     injectedItems = new Set<string>();

@@ -1,36 +1,21 @@
 import * as fs from 'fs';
 import { templateBuilder } from './templateBuilder.js';
 import { IParsedConfig } from './interfaces/IParsedConfig.js';
+import { IFormBuilderTemplate } from './templates/IFormBuilder'
+import { CustomeValidators } from './templates/CustomeValidators.js';
+import { SchemaObject } from './interfaces/schemaObject.js';
 
 export default class templateGenerator {
- 
     buildForm(body: { components: { schemas: any; }; }, parsedConfig: IParsedConfig) {
+
         let components = body.components.schemas;
+        const builder = new templateBuilder(parsedConfig, components);
+
         Object.keys(components).forEach(key => {
-            console.log("\n Working On : " + key);
-            let builder = new templateBuilder(parsedConfig);
-            let properties = components[key]['properties'];
-            if (properties == null) {
-                if (components[key].allOf && components[key].allOf.length == 2) {
-                    properties = components[key].allOf[1].properties;
-                    let inhertPath = components[key].allOf[0].$ref.replace('#/components/schemas/', '');
-                    properties = { ...properties, ...components[inhertPath].properties }
-                    //check for inherited props
-
-                } else {
-                    console.log(" .... File Skipped");
-                    return; // Skip it
-                }
-            }
-
-            let frm = builder.build(key, properties)
-            fs.writeFileSync(parsedConfig.formsOutput + "/" + key + ".ts", frm);
+            console.log("\n Working On : " + key); 
+            builder.build(key, components[key] as SchemaObject);
         });
-        fs.writeFileSync(parsedConfig.formsOutput + "/" + "IFormBuilder.ts", `
-            import { FormGroup } from '@angular/forms';
-            export interface IFormBuilder<T> {
-                buildForm(model: T): FormGroup;
-            }
-        `)
+        fs.writeFileSync(parsedConfig.formsOutput + "/" + "CustomeValidators.ts", CustomeValidators.getTemplate());
+        fs.writeFileSync(parsedConfig.formsOutput + "/" + "IFormBuilder.ts", IFormBuilderTemplate.getTemplate());
     } 
 }
