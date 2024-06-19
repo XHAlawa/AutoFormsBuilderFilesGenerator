@@ -10,7 +10,7 @@ import { helpers } from './helpers';
 
 class startup {
     public static parsedConfig = null as any as IParsedConfig;
-    public static main(): number {
+    public static main(): number { 
 
         startup.ReadConfigurationFile();
 
