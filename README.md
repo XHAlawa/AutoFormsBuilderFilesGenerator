@@ -1,98 +1,75 @@
-# Auto Reactive Forms Builder Generator Based On Open Api
+# Accelerate Angular Development with Auto Reactive Forms Builder Generator Based On Open API
 
 [![Socket Badge](https://socket.dev/api/badge/npm/package/angular-formsbuilder-gen)](https://socket.dev/npm/package/angular-formsbuilder-gen)
 
-  
+Unlock enhanced productivity in Angular development with our innovative NPM module! Seamlessly generate form classes directly from OpenAPI specifications, ensuring adherence to Angular best practices. Our solution is tailored for Angular 12 and above, offering compatibility and reliability.
 
-This NPM module generates build form class from an OpenApi, The generated classes follow the principles of Angular. The generated code is compatible with Angular 12+.
+Save valuable time and resources by automating the creation of form group objects. Say goodbye to manual labor and tedious form building processes. Our tool empowers developers with a FormBuilder Helper class, effortlessly generating FormBuilder scripts for each model. Experience streamlined development workflows and expedited project delivery with our intuitive solution.
 
-  
+Optimize your Angular development workflow today and elevate your productivity to new heights!
 
-Most of angular developers takes time on writeing form group objects or use form builder to generated models based on
+---
 
-openapi scheme , which can take long time so I've decided to use formBuilder Helper class and wrote this tool to help
+# Installation and Usage
 
-by auto generated formbuilder scripts for each model
+## Installing the Module
 
-  
+To install "angular-formsbuilder-gen" globally or within your project, run the following commands:
 
-# Installing and running
-
-If you want to install "angular-formsbuilder-gen" globally or just on your project
-
-```
+```sh
 npm install -g ng-openapi-gen
 npm install -g angular-formsbuilder-gen
 ```
+## Configuration
 
-Then If you want to use it first you need to create configuration file in root of your
-angular app let's call it **'swagger.json'** which should contains following object
-
+Create a configuration file named swagger.json in the root of your Angular app with the following content:
 ```
 {
-
-"$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
-"input": "https://localhost:44325/swagger/v1/swagger.json",
-"output": "./src/app/api",
-"ignoreUnusedModels": false,
-
-"modelsPath": "./../api/models",
-"formsOutput": "/src/app/forms"
-"schemeFile": "E://swagger.json"
+  "$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
+  "input": "https://localhost:44325/swagger/v1/swagger.json",
+  "output": "./src/app/api",
+  "ignoreUnusedModels": false,
+  
+  "modelsPath": "./../api/models",
+  "formsOutput": "/src/app/forms",
+  "schemeFile": "E://swagger.json"
 }
 
 ```
-**note** this file will be used also for **ng-openapi-gen** tool [Click here to know more about it](https://www.npmjs.com/package/ng-openapi-gen  "Click here to know more about it") in section "Configuration file and CLI arguments."
 
-  
+Note: This file is also used by the  [**ng-openapi-gen** ](https://www.npmjs.com/package/ng-openapi-gen  "Click For more information") tool. 
 
-our tool cares only about properties "modelsPath, formsOutput, input"
 
-- **Input**: url for open-api scheme json file
-- **schemeFile**: local path for scheme json file it's hight order execution if it exist
+Our tool specifically uses the properties modelsPath, formsOutput, and input:
 
-scheme is loaded from local file instead of url even if url is set
-- **models**: path for generated models **ng-openapi-gen**
-- **formsOutput**: where should our tool generated formsbuilder classes
+- **Input**: URL for the OpenAPI schema JSON file.
+- **schemeFile**: Local path for the schema JSON file, which takes precedence if it exists.
+- **modelsPath**: Path for generated models from ng-openapi-gen.
+- **formsOutput**: Path for generated FormBuilder classes.
 
-  
-  
 
-### Generate Services And Models
+### Generating Services and Models
 
-first we need to generated services and models by using **ng-openapi-gen**
-
-Execute Following Command:
-
+First, generate services and models using **ng-openapi-gen** :
 ```
-
 ng-openapi-gen -c swagger.json
-
 ```
+Ensure that files are generated in the "output" path defined in swagger.json.
+---
+### Generating FormsBuilder Classes
 
-Note: Make sure files are generated in "output" path defined in **swagger.json**
-
-  
-
-### Generate FormsBuilder Classes
-
-to generate angular you models formsbuilder classes
-
-Execute Following Command:
-
+To generate Angular models' FormBuilder classes, execute the following command:
 ```
 ng-frmGenerator swagger.json
-```
-or you can use
-```
+or
 ng-frmGenerator
 ```
 
-only because default filename for configuration is "swagger.json"
+only because default filename for configuration is **"swagger.json"**
 
 ### Example
 
-following example is for simple user information
+Here is an example of a generated FormBuilder class for a simple user information form:
 ```
 import { Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common';
@@ -183,31 +160,82 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
   
 
 }
-
-  
+ 
+---
 
 ```
 ### What Is New?  
-##### 1.0.36
-- in this version I've made a refactor in core behaviour of generating the files in order 
-  to support basic validations defined in swagger.json document.
- 
- - fix some issues which causes missing props in some models.
+#### Version 1.0.49
 
- - fix issue of build related to custome validator guidValidator
- 
+- **Core Changes:**
+  - All generated classes must now be registered as transient services in Angular components.
+  - Users can retrieve all sub-services by calling the static method `.provider()`.
 
-### Generated File Content
+  ```
+  @Component({
+    selector: 'app-example',
+    templateUrl: './example.component.html',
+    providers: [CustomerDtoFormBuilder.provider()]
+  })
+  export class ExampleComponent {
+    constructor(private customerDtoFormBuilder: CustomerDtoFormBuilder) {
+      // Use the form builder service
+    }
+  }
+  ```
+  The `.provider()` method ensures all dependent services are registered correctly, allowing for seamless integration and usage within your components.
 
-- Fields: Contains variables used in file
-- Constructor: Conatins default configuration
-- Methods:
-	-**buildForm** Method: Responsable for creating and updating generated form data.
-	-Arrays and Navigation methods 
-- Properties:
--Property Control: returns instance of control as FormControl
--Property ValueChange: returns observable of Control Value Changes
+- **Enhanced Functionality for FormArrays:**
+  - Added functionality to access and manage FormArrays using the generated services.
+  - New methods allow for easier handling of FormArray elements, including adding new elements and accessing specific elements by index.
 
+  ```typescript
+  addressesFormAt(index: number) {
+    return (this.addressesArray().controls[index] as any).__formGroupManager as UserAddressDtoFormBuilder;
+  }
+
+  addNewAddress(model: UserAddressDto | null = null): FormGroup<any> {
+     let formInstance = this.InjectorSrvc.get(UserAddressDtoFormBuilder);
+    let frm = formInstance.buildForm(model);
+    (frm as any).__formGroupManager = formInstance;
+    this.addressesArray().push(frm);
+    return frm;
+  }
+  ```
+  This enhancement provides a structured way to manage nested FormGroups within FormArrays, improving the flexibility and maintainability of your form structures. You can now manage FormArrays using our services, making it easier to handle complex forms in your Angular applications.
+
+##### Version 1.0.45
+* Fix Issue Where Enums In Some Cases Injected As Form builder
+* New Features
+	* EnumHelper
+		* nameToSatetment: Converts Enum Pascal Key Into Readable Text Example: UserFinanceCompleted ->  'User Finance Completed'
+		* getValByName: Gets Value Of Enum Key Example: { red: 2 } -> getValByName('red') return 2
+		* getNameByVal: Gets Value Of Enum Key Example: { red: 2 } -> getNameByVal(2) return 'red'
+		* getAllEnumValues: Returns All Values Of Enum Example: { red: 2, blue:5 } return [ 2, 5 ]
+		* getAllEnumNames: Returns All Names Of Enum Example: { red: 2, blue:5 } return [ 'red', 'blue' ]
+		* hasValue: Checks If Enum Has Value Example: { red: 2 } -> HasValue(2) return true
+		* hasName: Checks If Enum Has Name Example: { red: 2 } -> hasName('red') return true
+		* ToKeyValArray: Returns List Of { key, value } Of Enum Example: { red: 2, blue:5 } 
+			returns [ { key: 'red', value: 2 } ] useful in cases of using enum as data source for drop down
+	* DateHelper
+		* addDays: Add Number Of Days To Date
+		* addMonths: Add Number Of Months To Date
+		* addYears: Add Number Of Years To Date
+		* diffInDays: Get Diff Between Two Dates In Days
+		* diffInMonths: Get Diff Between Two Dates In Months
+		* diffInYears: Get Diff Between Two Dates In Years
+	* ShowForErrorDirective
+		* showForError: used to show dome if control has sepcific error
+		```
+		<form [formGroup]="myFormGroup">
+  			<!-- Other form elements -->
+		  	<div showForError="required" formControlName="controlName">
+    		This will show if 'invalidCharacters' error exists.
+  			</div>
+  			<!-- Other form elements -->
+		</form>
+		```
+---
 ## Features
 
 - Generate Angular **FormsBuilder** Class for All Models

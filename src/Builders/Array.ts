@@ -15,11 +15,17 @@ export class ArrayType implements ITypeBuilder{
             if ((prop.items! as ReferenceObject).$ref) {
                 let castedItems = (prop.items! as ReferenceObject).$ref;
                 let targetModelName = castedItems.replace(helpers.componentsPath, ''  );
-                buildServices.importsManager.import(helpers.normalizeToFormBuilderName(  targetModelName), `./${targetModelName}`)
-                buildServices.injectManager.inject(helpers.normalizeToFormBuilderName( targetModelName) );
-                defaultValue = `this.${helpers.normalizeToFormBuilderName( targetModelName)}Srvc.buildForm()`
+                // Check If Target Is Enum 
+                if (!buildServices.components[targetModelName].enum)  {
 
-                buildServices.serviceScripts.append(arrayMethodsTemplate.getTemplate(propName, helpers.normalizeToFormBuilderName( targetModelName)))
+                    buildServices.importsManager.import(helpers.normalizeToFormBuilderName(targetModelName), `./${targetModelName}`)
+                    buildServices.importsManager.import(helpers.capitalizeFirstLetter(targetModelName), buildServices.parsedConfigs.modelsPath)
+                    buildServices.serviceProviders.append(helpers.normalizeToFormBuilderName(targetModelName) + ",");
+                    buildServices.serviceScripts.append(arrayMethodsTemplate.getTemplate(propName, helpers.capitalizeFirstLetter( targetModelName)))
+                    defaultValue = ``
+                } else {
+                    defaultValue = helpers.getDefaultType(prop.type! as string ,prop.nullable);
+                }
             } else {
                 let castedItems = prop.items! as SchemaObject;
                 if (castedItems.type && (

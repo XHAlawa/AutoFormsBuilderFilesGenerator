@@ -18,6 +18,8 @@ export class templateBuilder {
     build(key: string, component: SchemaObject) { 
         let buildServices = <IBuildServices> this.GetRequiredBuildServices(key)
         this.ImportRequiredServicesForFormBuilder(key, buildServices);
+        this.InjectServices(key, buildServices);
+        buildServices.serviceProviders.append(helpers.normalizeToFormBuilderName(key) + ",");
 
         if (component.allOf != null) 
             this.ResolveAllOfProperties(component);
@@ -51,6 +53,9 @@ export class templateBuilder {
 
 
     }
+    InjectServices(key: string, buildServices: IBuildServices) {
+        buildServices.injectManager.inject("Injector")
+    }
     
     ResolveAllOfProperties(component: SchemaObject) {
         var ref = (component.allOf! as ReferenceObject[])[0];
@@ -64,6 +69,8 @@ export class templateBuilder {
 
     private ImportRequiredServicesForFormBuilder(key: string,services: IBuildServices) {
         services.importsManager.import('Injectable', '@angular/core');
+        services.importsManager.import('isDevMode', '@angular/core');
+        services.importsManager.import('Injector', '@angular/core');
         services.importsManager.import('DatePipe', '@angular/common');
         services.importsManager.import('FormControl, FormArray, FormGroup, FormBuilder, AbstractControl, Validators', '@angular/forms');
         services.importsManager.import('IFormBuilder', './IFormBuilder');
@@ -76,6 +83,7 @@ export class templateBuilder {
             serviceScripts: new scriptManager(),
             afterBuildScript: new scriptManager(),
             formGroupProps: new scriptManager(),
+            serviceProviders: new scriptManager(),
             injectManager: new injectServicesManager(key),
             importsManager: new fileImportingManager(),
             parsedConfigs: this.parsedConfig,

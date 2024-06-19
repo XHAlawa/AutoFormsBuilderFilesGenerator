@@ -34,8 +34,9 @@ export class PermitiveType implements ITypeBuilder {
         if (prop.format! == 'guid') 
             validations.push(`guidValidator(${prop.nullable! ? 'true' : ''})`);
 
-        if (prop.format == 'date-time')
-            defaultValue = 'this.DatePipe.transform(new Date()) as string' // DatePipe Is Always Defined In Template Constructor;
+        if (prop.format == 'date-time') {
+            defaultValue = 'this.DatePipe.transform(new Date(), \'yyyy-MM-dd\') as string' // DatePipe Is Always Defined In Template Constructor;
+        }
 
         buildServices.formGroupProps.append(`${helpers.tabs}${propName}:`);
 

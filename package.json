@@ -1,28 +1,39 @@
 {
   "type": "commonjs",
   "name": "angular-formsbuilder-gen",
-  "version": "1.0.36",
+  "version": "1.0.49",
   "main": "index.js",
   "keywords": [
     "angular",
+    "forms",
     "form-builder",
+    "reactive forms",
     "form builder",
     "builder",
     "scheme",
     "auto",
+    "form generation",
     "formgroup",
     "form",
     "formarray",
     "class",
     "object",
     "builder",
+    "swagger",
+    "api",
     "openapi",
     "codegen",
     "formbuilder",
     "generator",
     "models",
     "gen",
-    "form-create"
+    "form-create",
+    "automation",
+    "typescript",
+    "ng-openapi-gen",
+    "angular development",
+    "productivity",
+    "npm package"
   ],
   "repository": {
     "type": "git",
@@ -30,17 +41,20 @@
   },
   "author": "Ahmed Halawa",
   "license": "ISC",
-  "description": "Auto Generate Forms Builder Files For Angualr 6+ Base On Swagger Generated Scheme",
+  "description": "Accelerate Angular Development with Auto Reactive Forms Builder Generator Based On Open API",
   "bin": {
     "ng-frmGenerator": "./bin/src/index.js"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.0.0"
   },
   "files": [
     "bin/src/*.js",
     "bin/src/interfaces/*.js",
-    "bin/src/templates/*.js"
+    "bin/src/templates/*.js",
+    "bin/src/Builders/*.js",
+    "bin/src/scriptManager/*.js"
   ],
   "scripts": {
     "tsc": "tsc --build --verbose --incremental --watch",

@@ -6,7 +6,7 @@ export class formBuilderTemplate {
         return `
 ${services.importsManager.toString()}
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ${helpers.normalizeToFormBuilderName(key)} implements IFormBuilder<${key}> {
     DatePipe: DatePipe = null as any;
     DateFormat: string = 'yyyy-MM-dd';
@@ -15,18 +15,22 @@ export class ${helpers.normalizeToFormBuilderName(key)} implements IFormBuilder<
     constructor(private fb: FormBuilder
         ${services.injectManager.toString()}
     ) {
-        this.DatePipe = new DatePipe('en-US');
+      if (isDevMode()) {
+        console.warn('Make Sure ${key} Is Regestered In Component Providers');
+      }
+      this.DatePipe = new DatePipe('en-US');
     }
 
     updateCulture(culture: string = 'en-US') {
         this.DatePipe = new DatePipe(culture);
+    } 
+
+    static Providers() {
+        return [ ${services.serviceProviders.toString()} ]
     }
 
-    resetForm() {
-        this.form.reset();
-    }
-
-    buildForm(model: ${key} | null = null) {
+    buildForm(model: ${key} | null = null, 
+        additionalControl: { name: string, control?: AbstractControl}[] = []) {
         
         this.form = this.fb.group({
 ${services.formGroupProps.toString()}
@@ -36,9 +40,31 @@ ${services.formGroupProps.toString()}
             this.form.patchValue({ ... model });
         }
 
+        additionalControl.forEach(a => {
+          this.form.addControl(a.name, a.control ?? new FormControl())
+        })
+
         ${services.afterBuildScript.toString()}
 
         return this.form;
+    }
+
+    resetForm() {
+        this.form.reset();
+    }
+
+    getCtrl(controlName: keyof ${key}) {
+        return this.form.get(controlName)
+    }
+
+    get value() {
+        return this.form.getRawValue() as ${key};
+    }
+
+    isValid(controlName: keyof ${key}) {
+        let ctrl = this.getCtrl(controlName);
+        if (ctrl == null) throw 'Control Not Found' + controlName;
+        return ctrl.invalid && (ctrl.dirty || ctrl.touched);
     }
     
 ${services.serviceScripts.toString()}

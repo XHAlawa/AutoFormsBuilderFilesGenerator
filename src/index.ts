@@ -10,7 +10,7 @@ import { helpers } from './helpers';
 
 class startup {
     public static parsedConfig = null as any as IParsedConfig;
-    public static main(): number { 
+    public static main(): number {
 
         startup.ReadConfigurationFile();
 
@@ -18,7 +18,7 @@ class startup {
 
         if (!helpers.isNullOrEmpty(startup.parsedConfig.schemeFile)) {
             startup.ProccessFile();
-        } else if (!helpers.isNullOrEmpty(startup.parsedConfig.schemeFile)) {
+        } else if (!helpers.isNullOrEmpty(startup.parsedConfig.input)) {
             startup.ProccessUrl();
         }
 

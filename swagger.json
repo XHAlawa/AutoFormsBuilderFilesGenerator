@@ -1,11 +1,10 @@
 {
-    "input": "https://localhost:44325/swagger/v1/swagger.json",
+    "input": "https://localhost:44335/swagger/v1/swagger.json",
     "output": "./src/app/api",
     "ignoreUnusedModels": false,
   
   
     "modelsPath": "./../api/models",
-    "formsOutput": "/forms",
-    "schemeFile": "E://swagger.json"
+    "formsOutput": "/forms"
   }
   
