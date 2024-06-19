@@ -8,7 +8,7 @@ import { SchemaObject } from './interfaces/schemaObject.js';
 import { formsHelpers } from './templates/formsHelpers.js';
 import { showForErrorDirective } from './templates/ShowForErrorDirective';
 import { validationManager } from './templates/validationManager';
-import { customeValidators } from './templates/customeValidators';
+import { customeValidators } from './templates/CustomeValidators';
 
 export default class templateGenerator {
     buildForm(body: { components: { schemas: any; }; }, parsedConfig: IParsedConfig) {
