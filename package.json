@@ -1,7 +1,7 @@
 {
   "type": "commonjs",
   "name": "angular-formsbuilder-gen",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "main": "index.js",
   "keywords": [
     "angular",

@@ -14,10 +14,10 @@ export class customeValidators {
 
       export function guidValidator(allowNull: boolean = false): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
-          if (allowNull && control.value == null || control.value.toString().length == 0)  {
+          if (allowNull && control.value == null || control.value?.toString().length == 0)  {
             return null;
           }
-          const valid = Validators.pattern(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)(control);
+          const valid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(control.value);
           return valid ? null : { 'invalidGuid': { value: control.value } };
         };
       }
