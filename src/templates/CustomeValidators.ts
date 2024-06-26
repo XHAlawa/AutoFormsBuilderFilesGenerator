@@ -17,8 +17,20 @@ export class customeValidators {
           if (allowNull && control.value == null || control.value?.toString().length == 0)  {
             return null;
           }
-          const valid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(control.value);
-          return valid ? null : { 'invalidGuid': { value: control.value } };
+          let isValid = true;
+          let values: string[] = [];
+          if (!Array.isArray(control.value))
+            values = [ control.value ];
+          else
+            values = control.value;
+
+          const guidtest = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+          values.forEach(v => {
+            if (!guidtest.test(v)) {
+              isValid = false;
+            }
+          })
+          return isValid ? null : { 'invalidGuid': { value: control.value } };
         };
       }
 

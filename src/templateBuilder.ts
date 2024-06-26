@@ -9,8 +9,8 @@ import { IBuildServices, IDataType } from './interfaces/ICurrentProp';
 import * as fs from 'fs';
 import { SchemaObject, ReferenceObject } from './interfaces/schemaObject';
 import { helpers } from './helpers';
-import { ArrayType } from './Builders/Array';
-import { PropertAccessory } from './Builders/PropertyAccessors';
+import { ArrayType } from './Builders/Array'; 
+import { propFunctionsTemplate } from './templates/propsFunctions';
 export class templateBuilder {
     constructor(private parsedConfig: IParsedConfig,private components: any) { 
     }
@@ -28,8 +28,7 @@ export class templateBuilder {
         {
             const permitiveType = new PermitiveType();
             const basedOnEnumType = new BasedOnEnumType();
-            const arrayType = new ArrayType();
-            const propAccessor = new PropertAccessory();
+            const arrayType = new ArrayType(); 
 
             Object.keys(component.properties!).forEach(propName => {
                 const prop = component.properties![propName] as SchemaObject;
@@ -41,7 +40,7 @@ export class templateBuilder {
                 else if (prop.enum == null)
                     permitiveType.build(propName, prop, component, buildServices);
 
-                propAccessor.build(propName, prop, component, buildServices);
+                buildServices.serviceScripts.append(propFunctionsTemplate.getTemplate(propName));
             });
             let result = formBuilderTemplate.getTemplate( key,  buildServices);
             fs.writeFileSync(this.parsedConfig.formsOutput + "/" + key + ".ts", result);

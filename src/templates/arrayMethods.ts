@@ -5,6 +5,9 @@ export class arrayMethodsTemplate {
     public static getTemplate(propName: string, arrayRef: string) {
         let normalizedName = helpers.normalizeToFormBuilderName(arrayRef);
         return`
+    get ${propName}Value(): ${arrayRef}[] {
+      return this.${propName}Array().value as ${arrayRef}[];
+    }
     ${propName}Array(): FormArray {
         return this.form.controls['${propName}'] as FormArray;
     }

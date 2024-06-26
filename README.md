@@ -165,8 +165,8 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
 
 ```
 ### What Is New?  
-#### Version 1.0.50
-   - Fix Bug In Guid Custome Validator
+#### Version 1.0.52
+   - Fix Bug In Guid Custome Validator, Allow Muliple Guids
 #### Version 1.0.49
 
 - **Core Changes:**
