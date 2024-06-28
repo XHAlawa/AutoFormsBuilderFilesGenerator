@@ -165,6 +165,8 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
 
 ```
 ### What Is New?  
+#### Version 1.0.53
+   - Fix: Missing comma in in generated FormBuilder -> buildForm() (Git Hub: Issue #)
 #### Version 1.0.52
    - Fix Bug In Guid Custome Validator, Allow Muliple Guids
 #### Version 1.0.49

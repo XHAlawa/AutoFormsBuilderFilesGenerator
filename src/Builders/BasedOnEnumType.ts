@@ -10,7 +10,7 @@ export class BasedOnEnumType implements ITypeBuilder {
         const targetModelName = castedProp.$ref.replace(helpers.componentsPath, '');
         const targetModel = buildServices.components[targetModelName] as SchemaObject;
         if (prop.nullable! || targetModel.enum == null || targetModel.enum!.length == 0) {
-            buildServices.formGroupProps.append(`${helpers.tabs}${propName}: [ null ] `);
+            buildServices.formGroupProps.append(`${helpers.tabs}${propName}: [ null ], \n`);
         } else {
             const firstEnumValue =  targetModel.enum![0];
             const tabs = `\n${helpers.tabs}${helpers.tabs1}`
