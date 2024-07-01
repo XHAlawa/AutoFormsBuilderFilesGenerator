@@ -3,5 +3,6 @@ export interface IParsedConfig {
     modelsPath: string;
     formsOutput: string;
     schemeFile: string;
+    useEnumValuesAsString?: boolean;
 
 }

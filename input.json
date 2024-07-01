@@ -1,0 +1,42 @@
+{
+    "components": {
+        "schemas": {
+            "Test": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "enumRef": {
+                        "$ref": "#/components/schemas/TestEnum"
+                    },
+                    "numEnum": {
+                        "$ref": "#/components/schemas/TestEnum2"
+                    }
+                }
+            },
+            "TestEnum": {
+                "enum": [
+                    "valueA",
+                    "valueB",
+                    "valueC"
+                ],
+                "type": "string"
+            },
+            "TestEnum2": {
+                "type": "integer",
+                "description": "",
+                "x-enumNames": [
+                    "valueA",
+                    "valueB",
+                    "valueC"
+                ],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            }
+        }
+    }
+}

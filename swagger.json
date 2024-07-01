@@ -5,6 +5,8 @@
   
   
     "modelsPath": "./../api/models",
-    "formsOutput": "/forms"
+    "formsOutput": "/forms",
+    "schemeFile": "input.json",
+    "useEnumValuesAsString": true
   }
   

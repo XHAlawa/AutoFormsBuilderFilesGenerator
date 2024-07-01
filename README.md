@@ -165,8 +165,10 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
 
 ```
 ### What Is New?  
+#### Version 1.0.54
+   - Enum properties are undefined/unreferenced in generated FormBuilder -> buildForm() (Git Hub: Issue #5)
 #### Version 1.0.53
-   - Fix: Missing comma in in generated FormBuilder -> buildForm() (Git Hub: Issue #)
+   - Fix: Missing comma in in generated FormBuilder -> buildForm() (Git Hub: Issue #4)
 #### Version 1.0.52
    - Fix Bug In Guid Custome Validator, Allow Muliple Guids
 #### Version 1.0.49
