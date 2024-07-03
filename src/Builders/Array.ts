@@ -2,6 +2,7 @@ import { helpers } from '../helpers';
 import { IBuildServices, IDataType } from '../interfaces/ICurrentProp';
 import { ReferenceObject, SchemaObject } from '../interfaces/schemaObject';
 import { arrayMethodsTemplate } from '../templates/arrayMethods';
+import { formBuilderTemplate } from '../templates/formBuilderService';
 import { propFunctionsTemplate } from '../templates/propsFunctions';
 import { ITypeBuilder } from './ITypeBuilder';
 import { PermitiveType } from './PermitiveType';
@@ -21,8 +22,9 @@ export class ArrayType implements ITypeBuilder{
 
                     buildServices.importsManager.import(helpers.normalizeToFormBuilderName(targetModelName), `./${targetModelName}`)
                     buildServices.importsManager.import(helpers.capitalizeFirstLetter(targetModelName), buildServices.parsedConfigs.modelsPath)
-                    buildServices.serviceProviders.append(helpers.normalizeToFormBuilderName(targetModelName) + ",");
+                    buildServices.serviceProviders.append(formBuilderTemplate.getProvidersTemplate(targetModelName, ''));
                     buildServices.serviceScripts.append(arrayMethodsTemplate.getTemplate(propName, helpers.capitalizeFirstLetter( targetModelName)));
+                    buildServices.patchModelScripts.append(arrayMethodsTemplate.getPatchTemplate(propName));
                     defaultValue = ``
                 } else {
                     defaultValue = helpers.getDefaultType(prop.type! as string ,prop.nullable);

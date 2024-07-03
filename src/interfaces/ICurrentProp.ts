@@ -17,6 +17,7 @@ export interface IBuildServices {
     formGroupProps: scriptManager;
     serviceScripts: scriptManager;
     serviceProviders: scriptManager;
+    patchModelScripts: scriptManager;
     afterBuildScript: scriptManager;
     importsManager: fileImportingManager;
     parsedConfigs: IParsedConfig;

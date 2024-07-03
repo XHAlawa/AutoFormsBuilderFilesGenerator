@@ -19,7 +19,7 @@ export class templateBuilder {
         let buildServices = <IBuildServices> this.GetRequiredBuildServices(key)
         this.ImportRequiredServicesForFormBuilder(key, buildServices);
         this.InjectServices(key, buildServices);
-        buildServices.serviceProviders.append(helpers.normalizeToFormBuilderName(key) + ",");
+        buildServices.serviceProviders.append(formBuilderTemplate.getProvidersTemplate(key, key));
 
         if (component.allOf != null) 
             this.ResolveAllOfProperties(component);
@@ -85,6 +85,7 @@ export class templateBuilder {
             serviceProviders: new scriptManager(),
             injectManager: new injectServicesManager(key),
             importsManager: new fileImportingManager(),
+            patchModelScripts: new scriptManager(),
             parsedConfigs: this.parsedConfig,
             components: this.components
         };

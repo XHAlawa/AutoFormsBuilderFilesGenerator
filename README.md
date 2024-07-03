@@ -165,6 +165,9 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
 
 ```
 ### What Is New?  
+#### Version 1.0.62
+   - Fix Issue Of Patching Arrays Values
+   - Fix Issue Of Providers Dependency
 #### Version 1.0.54
    - Enum properties are undefined/unreferenced in generated FormBuilder -> buildForm() (Git Hub: Issue #5)
 #### Version 1.0.53

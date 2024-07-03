@@ -29,5 +29,9 @@ export class arrayMethodsTemplate {
     }
     `   
     }
+
+    public static getPatchTemplate(propName: string) {
+        return `${helpers.tabs}${helpers.tabs}model.${propName}?.forEach(a => this.addNew${helpers.capitalizeFirstLetter(propName)}(a));\n`
+    }
     
 }

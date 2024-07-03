@@ -25,8 +25,8 @@ export class ${helpers.normalizeToFormBuilderName(key)} implements IFormBuilder<
         this.DatePipe = new DatePipe(culture);
     } 
 
-    static Providers() {
-        return [ ${services.serviceProviders.toString()} ]
+    static Providers(): any[] {
+        return [ ${services.serviceProviders.toString()} ] as any[];
     }
 
     buildForm(model: ${key} | null = null, 
@@ -38,6 +38,7 @@ ${services.formGroupProps.toString()}
 
         if (model != null) {
             this.form.patchValue({ ... model });
+${services.patchModelScripts.toString()}
         }
 
         additionalControl.forEach(a => {
@@ -70,5 +71,13 @@ ${services.formGroupProps.toString()}
 ${services.serviceScripts.toString()}
 }
 `
+    }
+
+    static getProvidersTemplate(key, currentComponentKey) {
+        const normalizedKey = helpers.normalizeToFormBuilderName(key);
+
+        if (helpers.normalizeToFormBuilderName(key) == helpers.normalizeToFormBuilderName(currentComponentKey))
+            return `${normalizedKey},`;
+        return `${normalizedKey}, ...${normalizedKey}.Providers(), `;
     }
 }
