@@ -41,4 +41,8 @@ export class enumHelper {
 }
         `
     }
+
+    public static getEnumValidator(values: string) {
+        return `Validators.compose([ oneOfValidator( [ ${ values } ] ) ] )`;
+    }
 }
