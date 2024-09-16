@@ -21,7 +21,7 @@ export class PermitiveType implements ITypeBuilder {
 
         if (prop.type == IDataType.integer || prop.type == IDataType.number) {
             if (prop.minimum) {
-                validations.push(`Validators.max(${prop.minimum})`)
+                validations.push(`Validators.min(${prop.minimum})`)
                 defaultValue = prop.minimum.toString();
             }
             if (prop.maximum)   
