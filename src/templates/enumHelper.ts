@@ -3,13 +3,14 @@ export class enumTemplate {
         return `
 export class enumHelper {
     static nameToSatetment(name: string) {
-        if (name == null) return '';
-        return name
-            .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
-            .replace(/([a-z\d])([A-Z])/g, '$1 $2')
-            .replace(/([a-zA-Z])(\d)/g, '$1 $2')
-            .replace(/^./, function (str) { return str.toUpperCase(); })
-            .trim();
+    if (name == null) return '';
+    return name
+        .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+        .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+        .replace(/^./, function (str) {
+            return str.toUpperCase();
+        })
+        .trim();
     }
 
     static getValByName(enumObj: any, name: string): number | undefined {

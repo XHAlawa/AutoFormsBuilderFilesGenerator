@@ -166,6 +166,8 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
 ```
 ### What Is New?  
 #### Version 1.0.64
+   - Fix generated enum keys (Git Hub: Issue #8)
+#### Version 1.0.64
    - Add Template To Handle Array Of Enum Values 
 #### Version 1.0.62
    - Fix Issue Of Patching Arrays Values

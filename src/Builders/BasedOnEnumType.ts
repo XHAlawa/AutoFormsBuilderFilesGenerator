@@ -51,8 +51,17 @@ export class BasedOnEnumType implements ITypeBuilder {
                 this.enumTypeImported = true;
                 buildServices.importsManager.import(enumName, buildServices.parsedConfigs.modelsPath);
             }
-            return `${enumName}.${value}`;
+            let sanitizedValue = this.sanitizeEnumValue(value);
+            return `${enumName}.${sanitizedValue}`;
         }
     }
+
+    sanitizeEnumValue(value: string): string {
+        return value
+          .replace(/-$/, "")             
+          .replace(/-/g, "_")            
+          .replace(/[^a-zA-Z0-9_]/g, "");
+      }
+
 
 }

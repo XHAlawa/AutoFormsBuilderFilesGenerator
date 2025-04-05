@@ -57,11 +57,17 @@ export class templateBuilder {
     }
     
     ResolveAllOfProperties(component: SchemaObject) {
-        var ref = (component.allOf! as ReferenceObject[])[0];
-        let targetModelKey = ref.$ref.replace(helpers.componentsPath, '')
-        var targetModel = this.components[targetModelKey] as SchemaObject;
-        
-        component.properties = { ...(component.allOf![1] as SchemaObject).properties, ...targetModel.properties };
+        let props: any = {};
+        (component.allOf! as SchemaObject[]).forEach((refOrSchema: SchemaObject) => {
+            if ((refOrSchema as ReferenceObject).$ref) {
+                let targetModelKey = (refOrSchema as ReferenceObject).$ref.replace(helpers.componentsPath, '');
+                let targetModel = this.components[targetModelKey] as SchemaObject;
+                props = { ...props, ...targetModel.properties };
+            } else {
+                props = { ...props, ...refOrSchema.properties };
+            }
+        });
+        component.properties = props;
         delete component.allOf;
     }
 

@@ -8,14 +8,16 @@ export class dateHelper {
         return result;
     }
     static addMonths(date: Date, months: number): Date {
-        const newDate = new Date(date.getTime());
+        const newDate = new Date(date);
         const targetMonth = newDate.getMonth() + months;
-        const yearChange = Math.floor(targetMonth / 12);
-        const newYear = newDate.getFullYear() + yearChange;
-        const newMonth = targetMonth % 12;
-        newDate.setFullYear(newYear);
-        newDate.setMonth(newMonth);
-
+        const targetYear = newDate.getFullYear() + Math.floor(targetMonth / 12);
+        let adjustedMonth = targetMonth % 12;
+        if (targetMonth < 0) adjustedMonth = (12 + (targetMonth % 12)) % 12;
+        newDate.setFullYear(targetYear);
+        newDate.setMonth(adjustedMonth);
+        if (newDate.getDate() !== date.getDate()) {
+            newDate.setDate(0);
+        }
         return newDate;
     }
     static addYears(date: Date, years: number): Date {
