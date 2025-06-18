@@ -13,10 +13,12 @@ export class PermitiveType implements ITypeBuilder {
             validations.push('Validators.required');
 
         if (prop.type == IDataType.string) {
-            if (prop.minLength) 
+            if (prop.minLength)
                 validations.push(`Validators.minLength(${prop.minLength})`)
             if (prop.maxLength)
                 validations.push(`Validators.maxLength(${prop.maxLength})`)
+            if (prop.pattern)
+                validations.push(`Validators.pattern(${JSON.stringify(prop.pattern)})`)
         }
 
         if (prop.type == IDataType.integer || prop.type == IDataType.number) {

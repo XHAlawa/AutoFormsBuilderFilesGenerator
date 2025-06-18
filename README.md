@@ -164,7 +164,9 @@ addNewaddresses(model: UserAddressDto | null = null): FormGroup<any> {
 ---
 
 ```
-### What Is New?  
+### What Is New?
+#### Version 1.0.69
+   - Added support for the OpenAPI `pattern` property. Generated controls now include `Validators.pattern` when a schema defines a regex.
 #### Version 1.0.64
    - Fix generated enum keys (Git Hub: Issue #8)
 #### Version 1.0.64
