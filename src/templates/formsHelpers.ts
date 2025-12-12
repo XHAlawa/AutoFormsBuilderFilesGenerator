@@ -25,6 +25,7 @@ export function namesOf<T, V extends T[keyof T] = any>(fs: ((x: T) => V)[]): str
 export function emptyId() {
     return '00000000-0000-0000-0000-000000000000';
 }
+
 export function newId() { 
     var d = new Date().getTime();
     var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported

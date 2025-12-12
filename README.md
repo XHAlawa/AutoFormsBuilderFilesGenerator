@@ -29,24 +29,47 @@ Create a configuration file named swagger.json in the root of your Angular app w
   "input": "https://localhost:44325/swagger/v1/swagger.json",
   "output": "./src/app/api",
   "ignoreUnusedModels": false,
-  
+
   "modelsPath": "./../api/models",
   "formsOutput": "/src/app/forms",
-  "schemeFile": "E://swagger.json"
-}
+  "schemeFile": "E://swagger.json",
 
+  "useEnumValuesAsString": false,
+  "useSignalFormTemplates": false,
+
+  "generateFormsHelpers": true,
+  "generateCustomValidators": true,
+  "generateValidationManager": true,
+  "generateShowForErrorDirective": true,
+  "generateIFormBuilder": true,
+  "generateDateHelper": true,
+  "generateEnumHelper": true,
+
+  "customFormTemplatePath": "",
+  "customSignalFormTemplatePath": ""
+}
 ```
 
 Note: This file is also used by the  [**ng-openapi-gen** ](https://www.npmjs.com/package/ng-openapi-gen  "Click For more information") tool. 
 
 
-Our tool specifically uses the properties modelsPath, formsOutput, and input:
+Our tool specifically uses the properties below:
 
-- **Input**: URL for the OpenAPI schema JSON file.
+- **input**: URL for the OpenAPI schema JSON file.
 - **schemeFile**: Local path for the schema JSON file, which takes precedence if it exists.
 - **modelsPath**: Path for generated models from ng-openapi-gen.
 - **formsOutput**: Path for generated FormBuilder classes.
-
+- **useEnumValuesAsString** (optional): When `true`, generated enum fields will use string values instead of enum member references.
+- **useSignalFormTemplates** (optional): When `true`, generates form builder classes that also expose Angular Signals-based state (`formValueSignal`, `isValidSignal`) on top of reactive forms. Intended for Angular 17+.
+- **generateFormsHelpers** (optional, default `true`): Control whether `FormsHelpers.ts` is generated.
+- **generateCustomValidators** (optional, default `true`): Control whether `CustomeValidators.ts` is generated.
+- **generateValidationManager** (optional, default `true`): Control whether `ValidationManager.ts` is generated.
+- **generateShowForErrorDirective** (optional, default `true`): Control whether `ShowForErrorDirective.ts` is generated.
+- **generateIFormBuilder** (optional, default `true`): Control whether `IFormBuilder.ts` is generated.
+- **generateDateHelper** (optional, default `true`): Control whether `DateHelper.ts` is generated.
+- **generateEnumHelper** (optional, default `true`): Control whether `EnumHelper.ts` is generated.
+- **customFormTemplatePath** (optional): Path to a Node module that exports a `getTemplate(key, services)` function (or `formBuilderTemplate.getTemplate`). When provided and `useSignalFormTemplates` is `false`, this function is used to generate the form builder class instead of the built-in template.
+- **customSignalFormTemplatePath** (optional): Same as `customFormTemplatePath`, but used when `useSignalFormTemplates` is `true`.
 
 ### Generating Services and Models
 

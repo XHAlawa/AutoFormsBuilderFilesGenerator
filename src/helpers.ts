@@ -25,4 +25,10 @@ export class helpers {
             'integer': '0'
         })[type] || undefined;
     }
+    static getInitialValue(schema: { default?: any, nullable?: boolean, type?: string }) {
+        if (schema.hasOwnProperty('default') && schema.default !== undefined && schema.default !== null) {
+            return typeof schema.default === 'string' ? `'${schema.default}'` : schema.default;
+        }
+        return helpers.getDefaultType(schema.type ?? 'string', schema.nullable);
+    }
 }

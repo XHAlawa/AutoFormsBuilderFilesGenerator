@@ -1,5 +1,4 @@
 import { helpers } from "../helpers";
-import { SchemaObject } from "../interfaces/schemaObject";
 
 export class arrayMethodsTemplate {
     public static getTemplate(propName: string, arrayRef: string) {
