@@ -19,5 +19,8 @@
     "generateEnumHelper": true,
 
     "customFormTemplatePath": "",
-    "customSignalFormTemplatePath": ""
+    "customSignalFormTemplatePath": "",
+
+    "validationErrorTemplatePath": "",
+    "generateValidationUiHelpers": true
 }

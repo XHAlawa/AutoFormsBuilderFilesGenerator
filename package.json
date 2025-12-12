@@ -1,7 +1,7 @@
 {
   "type": "commonjs",
   "name": "angular-formsbuilder-gen",
-  "version": "1.0.681",
+  "version": "2.0.0",
   "main": "index.js",
   "keywords": [
     "angular",
@@ -37,13 +37,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/XHAlawa/AutoFormsBuilderFilesGenerator.git"
+    "url": "git+https://github.com/XHAlawa/AutoFormsBuilderFilesGenerator.git"
   },
   "author": "Ahmed Halawa",
   "license": "ISC",
   "description": "Accelerate Angular Development with Auto Reactive Forms Builder Generator Based On Open API",
   "bin": {
-    "ng-frmGenerator": "./bin/src/index.js"
+    "ng-frmGenerator": "bin/src/index.js"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",

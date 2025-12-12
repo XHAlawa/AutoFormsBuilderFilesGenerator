@@ -7,10 +7,10 @@ export class arrayMethodsTemplate {
     get ${propName}Value(): ${arrayRef}[] {
       return this.${propName}Array().value as ${arrayRef}[];
     }
-    ${propName}Array(): FormArray {
-        return this.form.controls['${propName}'] as FormArray;
+    ${propName}Array(): FormArray<FormGroup> {
+        return this.form.controls['${propName}'] as FormArray<FormGroup>;
     }
-    ${propName}Controls(): AbstractControl<any, any>[] {
+    ${propName}Controls(): FormGroup[] {
         return this.${propName}Array().controls;  
     }
     delete${helpers.capitalizeFirstLetter(propName)}ByIndex(index: number): void {
@@ -35,25 +35,36 @@ export class arrayMethodsTemplate {
     get ${propName}Value(): ${arrayRef}[] {
       return this.${propName}Array().value as ${arrayRef}[];
     }
-    ${propName}Array(): FormArray {
-        return this.form.controls['${propName}'] as FormArray;
+    ${propName}Array(): FormArray<FormControl> {
+        return this.form.controls['${propName}'] as FormArray<FormControl>;
     }
-    ${propName}Controls(): AbstractControl<any, any>[] {
+    ${propName}Controls(): FormControl[] {
         return this.${propName}Array().controls;  
     }
     delete${helpers.capitalizeFirstLetter(propName)}ByIndex(index: number): void {
         this.${propName}Array().removeAt(index);
     }
     addNew${helpers.capitalizeFirstLetter(propName)}(value: ${arrayRef} | null = null): FormControl {
-        let control = new FormControl(value )
-        this.${propName}Array().push(new FormControl(value, ${validations}));
+        const control = new FormControl(value, ${validations});
+        this.${propName}Array().push(control);
         return control;
     }
     `   
     }
 
+    private static getTabs(count: number) {
+        let tabs = '';
+        for (let i = 0; i < count; i++) {
+            tabs += helpers.tabs;
+        }
+        return tabs;
+    }
+
     public static getPatchTemplate(propName: string) {
-        return `${helpers.tabs}${helpers.tabs}model.${propName}?.forEach(a => this.addNew${helpers.capitalizeFirstLetter(propName)}(a));\n`
+        return `${this.getTabs(2)}if (model.${propName}) {\n` +
+               `${this.getTabs(3)}this.${propName}Array().clear();\n` +
+               `${this.getTabs(3)}model.${propName}.forEach(a => this.addNew${helpers.capitalizeFirstLetter(propName)}(a));\n` +
+               `${this.getTabs(2)}}\n`;
     }
     
 }

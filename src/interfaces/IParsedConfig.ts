@@ -17,4 +17,10 @@ export interface IParsedConfig {
     generateEnumHelper?: boolean;
     customFormTemplatePath?: string;
     customSignalFormTemplatePath?: string;
+    validationErrorTemplatePath?: string;
+    generateValidationUiHelpers?: boolean;
+    cleanupUnusedFiles?: boolean;
+    includeModels?: string[];
+    excludeModels?: string[];
+    generateValidationMessagesJson?: boolean;
 }

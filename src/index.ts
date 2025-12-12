@@ -12,8 +12,56 @@ class startup {
     public static parsedConfig = null as any as IParsedConfig;
     public static main(): number {
         const args = process.argv.slice(2);
-        const isCustomize = args.includes('--customize');
+        if (args.includes('--help') || args.includes('-h')) {
+            console.log('Usage: ng-frmGenerator [init] [swagger.json] [--customize]');
+            console.log('  init          : create an initial swagger.json config in the current folder (or a given file name)');
+            console.log('  [swagger.json]: configuration file used for generation (default: ./swagger.json)');
+            console.log('  --customize   : copy default templates to a local folder and update config');
+            return 0;
+        }
         const mainDir = process.cwd();
+
+        if (args[0] === 'init') {
+            const targetNameArg = args[1] && !args[1].startsWith('-') ? args[1] : 'swagger.json';
+            const targetPath = path.isAbsolute(targetNameArg) ? targetNameArg : path.resolve(mainDir, targetNameArg);
+
+            if (fs.existsSync(targetPath)) {
+                console.log(`Configuration file already exists: ${targetPath}`);
+                return 1;
+            }
+
+            const defaultConfig = {
+                "$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
+                "input": "https://localhost:44325/swagger/v1/swagger.json",
+                "output": "./src/app/api",
+                "ignoreUnusedModels": false,
+                "modelsPath": "./../api/models",
+                "formsOutput": "/src/app/forms",
+                "schemeFile": "E://swagger.json",
+                "useEnumValuesAsString": false,
+                "useSignalFormTemplates": false,
+                "generateFormsHelpers": true,
+                "generateCustomValidators": true,
+                "generateValidationManager": true,
+                "generateShowForErrorDirective": true,
+                "generateIFormBuilder": true,
+                "generateDateHelper": true,
+                "generateEnumHelper": true,
+                "customFormTemplatePath": "",
+                "customSignalFormTemplatePath": "",
+                "generateValidationUiHelpers": true,
+                "cleanupUnusedFiles": true,
+                "includeModels": [],
+                "excludeModels": [],
+                "generateValidationMessagesJson": true
+            };
+
+            fs.writeFileSync(targetPath, JSON.stringify(defaultConfig, null, 2), { encoding: 'utf-8' });
+            console.log(`Created initial configuration file at: ${targetPath}`);
+            return 0;
+        }
+
+        const isCustomize = args.includes('--customize');
 
         // First non-flag argument is treated as config file path
         const configArg = args.find(a => !a.startsWith('-') && a !== '--customize');
