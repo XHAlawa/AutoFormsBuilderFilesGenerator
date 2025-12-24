@@ -4,13 +4,18 @@ export class validationUiHelpersTemplate {
 import { Pipe, PipeTransform, Component, ChangeDetectionStrategy, Input, Directive, ElementRef, Renderer2, OnInit, OnDestroy, ViewContainerRef, TemplateRef } from '@angular/core';
 import { AbstractControl, FormGroupDirective, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { ValidationManager, ValidationMessageVM } from './ValidationManager';
 
 export interface AfbShowErrorsOptions {
   generateHtml?: boolean;
 }
 
-@Pipe({ name: 'validationError', pure: false })
+@Pipe({ 
+  name: 'validationError', 
+  pure: false,
+  standalone: true
+})
 export class ValidationErrorPipe implements PipeTransform {
   transform(control: AbstractControl | null | undefined): string | null {
     if (!control) return null;
@@ -18,7 +23,11 @@ export class ValidationErrorPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'validationErrors', pure: false })
+@Pipe({ 
+  name: 'validationErrors', 
+  pure: false,
+  standalone: true
+})
 export class ValidationErrorsPipe implements PipeTransform {
   transform(control: AbstractControl | null | undefined): ValidationMessageVM[] {
     if (!control) return [];
@@ -28,6 +37,8 @@ export class ValidationErrorsPipe implements PipeTransform {
 
 @Component({
   selector: 'afb-validation-errors',
+  standalone: true,
+  imports: [CommonModule],
   template: '<ng-container *ngIf="control">' +
             '<ul *ngIf="(errors$ | async) as errs">' +
             '<li *ngFor="let e of (showAll ? errs : (errs | slice:0:1))">' +
@@ -53,7 +64,8 @@ export class ValidationErrorsComponent {
 }
 
 @Directive({
-  selector: '[afbAutoErrors]'
+  selector: '[afbAutoErrors]',
+  standalone: true
 })
 export class AfbAutoErrorsDirective implements OnInit, OnDestroy {
   @Input('afbAutoErrors') mode: 'submit' | 'manual' = 'submit';
@@ -147,7 +159,8 @@ export class AfbAutoErrorsDirective implements OnInit, OnDestroy {
 }
 
 @Directive({
-  selector: '[ForFormArray]'
+  selector: '[ForFormArray]',
+  standalone: true
 })
 export class ForFormArrayDirective implements OnDestroy {
   private path: string | null = null;

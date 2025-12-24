@@ -30,7 +30,7 @@ export interface AutoFormsBuilderConfig {
 export const AUTO_FORMS_BUILDER_CONFIG = new InjectionToken<AutoFormsBuilderConfig>('AUTO_FORMS_BUILDER_CONFIG');
 
 @NgModule({
-  declarations: [
+  imports: [
     ValidationErrorPipe,
     ValidationErrorsPipe,
     ValidationErrorsComponent,
