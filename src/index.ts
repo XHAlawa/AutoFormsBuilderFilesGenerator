@@ -53,6 +53,9 @@ class startup {
                 "cleanupUnusedFiles": true,
                 "includeModels": [],
                 "excludeModels": [],
+                "generateUnsavedChangesGuard": true,
+                "generateFormProvidersBarrel": true,
+                "generateFormWizard": false,
                 "generateValidationMessagesJson": true
             };
 

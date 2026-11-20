@@ -6,3 +6,4 @@ desktop.ini
 /.npmrc
 test-fixtures/out*/
 test-fixtures/api/
+test-fixtures/package-lock.json

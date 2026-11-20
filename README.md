@@ -145,6 +145,9 @@ You can **manually** create a configuration file named `swagger.json` in the roo
   "cleanupUnusedFiles": true,
   "includeModels": [],
   "excludeModels": [],
+  "generateUnsavedChangesGuard": true,
+  "generateFormProvidersBarrel": true,
+  "generateFormWizard": false,
   "generateValidationMessagesJson": true
 }
 ```
@@ -192,7 +195,10 @@ Our tool specifically uses the properties below:
 - **cleanupUnusedFiles** (optional, default `true`): When `true`, remove `.ts` files under `formsOutput` that no longer correspond to current schema models or enabled helpers.
 - **includeModels** (optional): Array of model names to generate forms for. When set, only these models are processed.
 - **excludeModels** (optional, default `[]`): Array of model names to skip. Excluded models get no form builder file, and every property that resolves through an excluded model is skipped too, so generated code never imports a file that was not produced. Use `"excludeModels": ["*"]` to disable form builder generation entirely (helpers are still generated).
-- **Circular references**: A property that points back to the current model, or that would create a static import cycle (A -> B -> A), is resolved at runtime through `InjectorSrvc` instead of a static `import`. Nested form builders that are not part of a cycle keep the existing constructor injection.
+- **Circular references**: A property that points back at the model that owns it is built as a plain control (`this.fb.control(null)`) instead of nesting its own form builder, so a generated file never imports itself. Long mutual reference chains (`A -> B -> ... -> A`) are handled normally: only the file that actually imports the other one gets the import, so nested form builders keep constructor injection.
+- **generateUnsavedChangesGuard** (optional, default `true`): Generates `UnsavedChangesGuard.ts`, a `CanDeactivate` guard that prompts before leaving a dirty form.
+- **generateFormProvidersBarrel** (optional, default `true`): Generates `FormProviders.ts` exporting `provideAllFormBuilders()`, `provideFormBuilders(...)` and `ALL_FORM_BUILDERS`.
+- **generateFormWizard** (optional, default `false`): Generates `FormWizard.ts`, a typed multi-step wizard (`setStep`, `next`, `previous`, `isValid`).
 - **generateValidationMessagesJson** (optional, default `true`): When `true`, generate `validation-messages.en.json` containing default validation messages for easy integration with i18n tools.
 
 ---

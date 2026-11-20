@@ -13,6 +13,9 @@ export class helpers {
         'EnumHelper.ts',
         'ValidationUiHelpers.ts',
         'AutoFormsBuilderModule.ts',
+        'UnsavedChangesGuard.ts',
+        'FormProviders.ts',
+        'FormWizard.ts',
         'FormsExtensions.d.ts',
         'validation-messages.en.json'
     ];

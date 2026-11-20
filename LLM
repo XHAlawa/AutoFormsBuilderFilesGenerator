@@ -27,8 +27,22 @@ Given a valid `swagger.json` configuration, the generator emits TypeScript files
   - `EnumHelper.ts`
   - `FormsExtensions.d.ts` (declaration file augmenting Angular `FormGroup` with `showValidationErrors`)
   - `AutoFormsBuilderModule.ts` (NgModule that wraps generated validation UI helpers)
+  - `UnsavedChangesGuard.ts` (CanDeactivate guard, `generateUnsavedChangesGuard`, default `true`)
+  - `FormProviders.ts` (`provideAllFormBuilders`, `provideFormBuilders`, `ALL_FORM_BUILDERS`, `generateFormProvidersBarrel`, default `true`)
+  - `FormWizard.ts` (multi-step form wizard, `generateFormWizard`, default `false`)
 
 These filenames are consumed by the templates and by `templateGenerator.ts`. Changing them has cascading effects.
+
+### Generated `*FormBuilder` surface
+
+Each generated builder implements `IFormBuilder<T>` (`form`, `buildForm`, `resetForm`, `value`) and also exposes:
+
+- `getControl(selector)`, `setFieldValue(selector, value)`, `watchField(selector)` — typed-selector helpers.
+- `submit(saveFn)` with `isSubmitting` loading state.
+- `markAllTouched()`, `disableAll()`, `enableAll()`.
+- `clone()`, `persistTo(key)`, `restoreFrom(key)`, `clearPersisted(key)`.
+
+When adding a member here, also add the matching import (`Observable` from `rxjs` is required for `submit`).
 
 ## 3. Configuration source (swagger.json / IParsedConfig)
 
@@ -63,8 +77,10 @@ The generator reads a JSON configuration file (commonly `swagger.json`). The par
 
 `src/helpers/referenceGraph.ts` builds the schema reference graph once per run (it detects self references and cycles, and skips excluded models).
 
-- A nested `*FormBuilder` is injected in the parent constructor **only** when importing it would not create a static cycle.
-- When the property points back to the current model or would create a cycle (`A -> B -> A`), the generated code has **no** static import for the child builder; it resolves it at runtime with `this.InjectorSrvc.get(XFormBuilder)` and registers it with `formBuilderTemplate.getDirectProviderTemplate`.
+Real schemas contain long mutual reference chains (`Appointment -> Clinic -> ... -> Appointment`). Those are **not** import cycles: `Clinic.ts` never imports `AppointmentFormBuilder`, because a property pointing back at its owner is built as a plain control or array. Only a direct self reference turns into `import { XFormBuilder } from './X'` inside `X.ts`, so `referenceGraph.isPartOfCycle` deliberately returns `true` **only** when the target equals the current model.
+
+- Non self references are imported statically and injected in the parent constructor.
+- A self reference is never imported or nested. `Builders/ObjectRefType.ts` emits `this.fb.control(null)`; `Builders/Array.ts` keeps the local builder class without importing itself.
 - `Builders/childFormBuilderReference.ts` is the single place that decides import vs Injector, and produces the `addNew*` getter expression used by `arrayMethodsTemplate`.
 
 Any AI changes to config-related code must respect backward-compatibility of these fields.

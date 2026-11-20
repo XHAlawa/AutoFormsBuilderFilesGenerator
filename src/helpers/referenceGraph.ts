@@ -58,28 +58,17 @@ export class referenceGraph {
         path.delete(modelName);
     }
 
-    // True when importing targetModelName inside currentModel would create a static import cycle
+    // True only when a static import would make the generated file reference itself.
+    // Real world schemas are full of long mutual reference chains (Appointment -> Clinic ->
+    // Appointment). Those are NOT import cycles: Clinic.ts never imports AppointmentFormBuilder
+    // because a property that points back at the owner is built as a plain control/array.
+    // Only a direct self reference turns into `import { XFormBuilder } from './X'` inside X.ts.
     isPartOfCycle(currentModelName: string, targetModelName: string): boolean {
-        if (currentModelName.toLowerCase() === targetModelName.toLowerCase()) return true;
-
-        this.resolving.clear();
-        return this.reaches(targetModelName, currentModelName);
+        return currentModelName.toLowerCase() === targetModelName.toLowerCase();
     }
 
-    private reaches(fromModelName: string, goalModelName: string): boolean {
-        if (fromModelName.toLowerCase() === goalModelName.toLowerCase()) return true;
-
-        const component = this.components[fromModelName];
-        if (component == null) return false;
-
-        this.resolving.add(fromModelName);
-
-        const found = this.getReferenceTargets(component).some(targetName => {
-            if (this.resolving.has(targetName)) return false;
-            return this.reaches(targetName, goalModelName);
-        });
-
-        this.resolving.delete(fromModelName);
-        return found;
+    // Kept for callers that need the full transitive reachability of a model
+    getAllReachable(currentModelName: string): Set<string> {
+        return this.getAllDependencies(currentModelName);
     }
 }

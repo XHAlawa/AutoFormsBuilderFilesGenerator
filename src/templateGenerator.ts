@@ -13,6 +13,9 @@ import { customeValidators } from './templates/CustomeValidators';
 import { validationUiHelpersTemplate } from './templates/validationUiHelpers';
 import { autoFormsBuilderModuleTemplate } from './templates/autoFormsBuilderModule';
 import { formsExtensionsTemplate } from './templates/formsExtensions';
+import { unsavedChangesGuardTemplate } from './templates/unsavedChangesGuard';
+import { formProvidersBarrelTemplate } from './templates/formProvidersBarrel';
+import { formWizardTemplate } from './templates/formWizardService';
 import { helpers } from './helpers';
 
 export default class templateGenerator {
@@ -73,6 +76,19 @@ export default class templateGenerator {
             fs.writeFileSync(parsedConfig.formsOutput + "/" + "FormsExtensions.d.ts", formsExtensionsTemplate.getTemplate());
         }
 
+        if (cfg.generateUnsavedChangesGuard ?? true) {
+            fs.writeFileSync(parsedConfig.formsOutput + "/" + "UnsavedChangesGuard.ts", unsavedChangesGuardTemplate.getTemplate());
+        }
+
+        if (cfg.generateFormProvidersBarrel ?? true) {
+            const builtKeys = modelKeys.filter(key => (components[key] as SchemaObject).properties != null);
+            fs.writeFileSync(parsedConfig.formsOutput + "/" + "FormProviders.ts", formProvidersBarrelTemplate.getTemplate(builtKeys));
+        }
+
+        if (cfg.generateFormWizard ?? false) {
+            fs.writeFileSync(parsedConfig.formsOutput + "/" + "FormWizard.ts", formWizardTemplate.getTemplate());
+        }
+
         if (cfg.generateValidationMessagesJson ?? true) {
             const messagesJson = {
                 Required: 'This field is required',
@@ -121,6 +137,10 @@ export default class templateGenerator {
                 expectedFiles.add('validation-messages.en.json');
             }
 
+            if (cfg.generateUnsavedChangesGuard ?? true) expectedFiles.add('UnsavedChangesGuard.ts');
+            if (cfg.generateFormProvidersBarrel ?? true) expectedFiles.add('FormProviders.ts');
+            if (cfg.generateFormWizard ?? false) expectedFiles.add('FormWizard.ts');
+
             const helperFiles = [
                 'FormsHelpers.ts',
                 'CustomeValidators.ts',
@@ -130,7 +150,10 @@ export default class templateGenerator {
                 'DateHelper.ts',
                 'EnumHelper.ts',
                 'ValidationUiHelpers.ts',
-                'AutoFormsBuilderModule.ts'
+                'AutoFormsBuilderModule.ts',
+                'UnsavedChangesGuard.ts',
+                'FormProviders.ts',
+                'FormWizard.ts'
             ];
 
             const outputDir = parsedConfig.formsOutput;

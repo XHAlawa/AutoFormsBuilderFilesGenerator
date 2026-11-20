@@ -9,9 +9,25 @@ export interface IChildFormBuilderReference {
     formBuilderName: string;
     // False when the nested builder is resolved through the Injector instead of being injected
     isInjected: boolean;
+    // True when the property points back at the model that owns it
+    isSelfReference?: boolean;
 }
 
 export class childFormBuilderReference {
+    // Arrays sometimes wrap their item type in allOf/oneOf/anyOf instead of a plain $ref
+    static resolveComposition(items: any): any {
+        if (items == null) return {};
+        if (typeof items.$ref === 'string') return items;
+
+        const composition = items.allOf || items.oneOf || items.anyOf;
+        if (Array.isArray(composition)) {
+            const refEntry = composition.find((entry: any) => entry != null && typeof entry.$ref === 'string');
+            if (refEntry) return refEntry;
+        }
+
+        return items;
+    }
+
     // Returns null when the reference cannot be generated
     // (excluded model, model outside includeModels, or missing schema)
     static getTargetModelName(prop: SchemaObject, services: IBuildServices): string | null {
@@ -43,9 +59,8 @@ export class childFormBuilderReference {
         const formBuilderName = helpers.normalizeToFormBuilderName(targetModelName);
 
         if (childFormBuilderReference.isCyclic(parentModelName, targetModelName, services)) {
-            // Cyclic references are resolved at runtime to avoid static import cycles
-            services.serviceProviders.append(formBuilderTemplate.getDirectProviderTemplate(targetModelName));
-            return { targetModelName, formBuilderName, isInjected: false };
+            // Self references are never imported or nested, they become a plain control
+            return { targetModelName, formBuilderName, isInjected: false, isSelfReference: true };
         }
 
         // False means the instance is already injected in the parent constructor, reuse it
@@ -68,9 +83,16 @@ export class childFormBuilderReference {
             : `this.InjectorSrvc.get(${reference.formBuilderName})`;
     }
 
+    // A self reference must not nest its own builder: buildForm() would recurse forever.
+    // It becomes a plain control that is patched directly.
+    static getPropertyTemplate(reference: IChildFormBuilderReference, services: IBuildServices) {
+        if (reference.isSelfReference) return `this.fb.control(null)`;
+        return `${childFormBuilderReference.getGetterTemplate(reference)}.buildForm()`;
+    }
+
     // True when importing the target inside the parent would create a static import cycle
     static isCyclic(parentModelName: string, targetModelName: string, services: IBuildServices) {
-        return services.referenceGraph != null
-            && services.referenceGraph.isPartOfCycle(parentModelName, targetModelName);
+        return parentModelName != null
+            && parentModelName.toLowerCase() === targetModelName.toLowerCase();
     }
 }

@@ -23,4 +23,7 @@ export interface IParsedConfig {
     includeModels?: string[];
     excludeModels?: string[];
     generateValidationMessagesJson?: boolean;
+    generateUnsavedChangesGuard?: boolean;
+    generateFormProvidersBarrel?: boolean;
+    generateFormWizard?: boolean;
 }

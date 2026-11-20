@@ -14,6 +14,7 @@ import * as path from 'path';
 import { SchemaObject, ReferenceObject } from './interfaces/schemaObject';
 import { helpers } from './helpers';
 import { ArrayType } from './Builders/Array'; 
+import { ObjectRefType } from './Builders/ObjectRefType';
 import { propFunctionsTemplate } from './templates/propsFunctions';
 import { childFormBuilderReference } from './Builders/childFormBuilderReference';
 import { referenceGraph } from './helpers/referenceGraph';
@@ -44,6 +45,7 @@ export class templateBuilder {
         {
             const permitiveType = new PermitiveType();
             const basedOnEnumType = new BasedOnEnumType();
+            const objectRefType = new ObjectRefType();
             const arrayType = new ArrayType(); 
 
             Object.keys(component.properties!).forEach(propName => {
@@ -53,8 +55,15 @@ export class templateBuilder {
 
                 if (prop.type == IDataType.array)
                     arrayType.build(propName, prop, component, buildServices);
-                else if (prop.type == undefined && (prop as any as ReferenceObject).$ref != null) 
-                    basedOnEnumType.build(propName, prop, component, buildServices);
+                else if (prop.type == undefined && (prop as any as ReferenceObject).$ref != null) {
+                    const refTarget = (prop as any as ReferenceObject).$ref.replace(helpers.componentsPath, '');
+                    const targetModel = this.components[refTarget] as SchemaObject;
+                    // Nested models get their own child form builder, enums stay inline
+                    if (targetModel != null && !targetModel.enum && (targetModel.properties || targetModel.allOf))
+                        objectRefType.build(propName, prop, component, buildServices);
+                    else
+                        basedOnEnumType.build(propName, prop, component, buildServices);
+                }
                 else if (prop.enum == null)
                     permitiveType.build(propName, prop, component, buildServices);
                 else 
@@ -160,6 +169,7 @@ export class templateBuilder {
 
         services.importsManager.import('DatePipe', '@angular/common');
         services.importsManager.import('FormControl, FormArray, FormGroup, FormBuilder, AbstractControl, Validators', '@angular/forms');
+        services.importsManager.import('Observable', 'rxjs');
         services.importsManager.import('IFormBuilder', './IFormBuilder');
         services.importsManager.import('oneOfValidator, guidValidator', './CustomeValidators');
         services.importsManager.import(helpers.capitalizeFirstLetter(key), this.parsedConfig.modelsPath);

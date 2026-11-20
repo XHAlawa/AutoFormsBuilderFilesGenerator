@@ -16,9 +16,9 @@ export class ArrayType implements ITypeBuilder{
             defaultValue = 'null';
         }
         // Check For Items Type 
-        else if ((items as ReferenceObject).$ref) {
-            let castedItems = (items as ReferenceObject).$ref;
-            let targetModelName = castedItems.replace(helpers.componentsPath, ''  );
+        else if ((items as ReferenceObject).$ref || (items.allOf || items.oneOf || items.anyOf)) {
+            const resolvedItems = childFormBuilderReference.resolveComposition(items);
+            let targetModelName = ((resolvedItems as ReferenceObject).$ref ?? '').replace(helpers.componentsPath, '');
             // Check If Target Is Enum 
             if (!buildServices.components[targetModelName].enum)  {
 
