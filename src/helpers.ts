@@ -3,6 +3,24 @@ export class helpers {
     static tabs2 = `\t\t`;
     static tabs1 = `\t`;
     static componentsPath: string = '#/components/schemas/';
+    static generatedHelperFiles: string[] = [
+        'FormsHelpers.ts',
+        'CustomeValidators.ts',
+        'ValidationManager.ts',
+        'ShowForErrorDirective.ts',
+        'IFormBuilder.ts',
+        'DateHelper.ts',
+        'EnumHelper.ts',
+        'ValidationUiHelpers.ts',
+        'AutoFormsBuilderModule.ts',
+        'FormsExtensions.d.ts',
+        'validation-messages.en.json'
+    ];
+
+    static isGeneratedHelperFile(fileName: string) {
+        return helpers.generatedHelperFiles.some(x => x.toLowerCase() === fileName.toLowerCase());
+    }
+
     static capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     } 

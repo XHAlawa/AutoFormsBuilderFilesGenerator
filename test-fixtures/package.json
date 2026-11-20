@@ -1,0 +1,13 @@
+{
+    "name": "autoformsbuilder-generator-fixtures",
+    "private": true,
+    "description": "Throwaway Angular dependencies used to typecheck generated output during verification",
+    "dependencies": {
+        "@angular/common": "^18.0.0",
+        "@angular/core": "^18.0.0",
+        "@angular/forms": "^18.0.0",
+        "rxjs": "^7.8.1",
+        "zone.js": "^0.14.0",
+        "typescript": "~5.4.0"
+    }
+}

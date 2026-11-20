@@ -2,6 +2,7 @@ import scriptManager from "../scriptManager/scriptManager";
 import fileImportingManager from "../scriptManager/fileImportingManager";
 import injectServicesManager from "../scriptManager/injectServicesManager";
 import { IParsedConfig } from "./IParsedConfig";
+import { referenceGraph } from "../helpers/referenceGraph";
 
 export enum IDataType {
     integer = 'integer',
@@ -22,4 +23,6 @@ export interface IBuildServices {
     importsManager: fileImportingManager;
     parsedConfigs: IParsedConfig;
     components: any;
+    referenceGraph: referenceGraph;
+    currentModelName: string;
 }

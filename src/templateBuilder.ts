@@ -15,12 +15,22 @@ import { SchemaObject, ReferenceObject } from './interfaces/schemaObject';
 import { helpers } from './helpers';
 import { ArrayType } from './Builders/Array'; 
 import { propFunctionsTemplate } from './templates/propsFunctions';
+import { childFormBuilderReference } from './Builders/childFormBuilderReference';
+import { referenceGraph } from './helpers/referenceGraph';
 
 export class templateBuilder {
-    constructor(private parsedConfig: IParsedConfig,private components: any) { 
+    private referenceGraph: referenceGraph;
+
+    constructor(private parsedConfig: IParsedConfig,private components: any, modelKeys: string[] = Object.keys(components)) { 
+        this.referenceGraph = new referenceGraph(components, parsedConfig, modelKeys);
     }
 
     build(key: string, component: SchemaObject) { 
+        if (this.referenceGraph.isExcluded(key)) {
+            console.warn(`\t${key} Is Excluded By excludeModels.. Skipped`);
+            return;
+        }
+
         let buildServices = <IBuildServices> this.GetRequiredBuildServices(key)
         const useSignalFormTemplates = this.parsedConfig.useSignalFormTemplates ?? false;
         this.ImportRequiredServicesForFormBuilder(key, buildServices, useSignalFormTemplates);
@@ -38,6 +48,8 @@ export class templateBuilder {
 
             Object.keys(component.properties!).forEach(propName => {
                 const prop = component.properties![propName] as SchemaObject;
+                // Property types that are only known through an excluded model are skipped as well
+                if (!this.isPropertyGeneratable(key, prop)) return;
 
                 if (prop.type == IDataType.array)
                     arrayType.build(propName, prop, component, buildServices);
@@ -45,9 +57,13 @@ export class templateBuilder {
                     basedOnEnumType.build(propName, prop, component, buildServices);
                 else if (prop.enum == null)
                     permitiveType.build(propName, prop, component, buildServices);
+                else 
+                    return;
 
                 buildServices.serviceScripts.append(propFunctionsTemplate.getTemplate(propName));
             });
+
+            buildServices.importsManager.import(helpers.capitalizeFirstLetter(key), this.parsedConfig.modelsPath);
 
             let result: string;
             if (useSignalFormTemplates) {
@@ -75,10 +91,39 @@ export class templateBuilder {
         }
     }
 
+    private isPropertyGeneratable(modelName: string, prop: SchemaObject) {
+        if (prop.type == IDataType.array) {
+            const items = (prop.items ?? {}) as SchemaObject;
+            if ((items as any as ReferenceObject).$ref == null) return true;
+            return childFormBuilderReference.getTargetModelName(items, this.getBuildServicesForLookup(modelName)) != null;
+        }
+
+        if (prop.type == undefined && (prop as any as ReferenceObject).$ref != null)
+            return childFormBuilderReference.getTargetModelName(prop, this.getBuildServicesForLookup(modelName)) != null;
+
+        return true;
+    }
+
+    private getBuildServicesForLookup(modelName: string): IBuildServices {
+        return {
+            injectManager: new injectServicesManager(modelName),
+            formGroupProps: new scriptManager(),
+            serviceScripts: new scriptManager(),
+            serviceProviders: new scriptManager(),
+            patchModelScripts: new scriptManager(),
+            afterBuildScript: new scriptManager(),
+            importsManager: new fileImportingManager(),
+            parsedConfigs: this.parsedConfig,
+            components: this.components,
+            referenceGraph: this.referenceGraph,
+            currentModelName: modelName
+        };
+    }
+
     InjectServices(key: string, buildServices: IBuildServices) {
         buildServices.injectManager.inject("Injector")
     }
-    
+
     flattenAllOfToProperties(component: SchemaObject) {
         let props: any = {};
         let required: string[] = [];
@@ -117,7 +162,7 @@ export class templateBuilder {
         services.importsManager.import('FormControl, FormArray, FormGroup, FormBuilder, AbstractControl, Validators', '@angular/forms');
         services.importsManager.import('IFormBuilder', './IFormBuilder');
         services.importsManager.import('oneOfValidator, guidValidator', './CustomeValidators');
-        services.importsManager.import(key, this.parsedConfig.modelsPath);
+        services.importsManager.import(helpers.capitalizeFirstLetter(key), this.parsedConfig.modelsPath);
     }
 
     private GetRequiredBuildServices(key: string): IBuildServices {
@@ -130,7 +175,9 @@ export class templateBuilder {
             importsManager: new fileImportingManager(),
             patchModelScripts: new scriptManager(),
             parsedConfigs: this.parsedConfig,
-            components: this.components
+            components: this.components,
+            referenceGraph: this.referenceGraph,
+            currentModelName: key
         };
     }
 

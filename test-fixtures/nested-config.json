@@ -1,0 +1,20 @@
+{
+    "schemeFile": "./test-fixtures/nested-swagger.json",
+    "input": "",
+    "modelsPath": "./../api/models",
+    "formsOutput": "./test-fixtures/out-nested",
+    "useEnumValuesAsString": false,
+    "useSignalFormTemplates": false,
+    "generateFormsHelpers": true,
+    "generateCustomValidators": true,
+    "generateValidationManager": true,
+    "generateShowForErrorDirective": true,
+    "generateIFormBuilder": true,
+    "generateDateHelper": true,
+    "generateEnumHelper": true,
+    "generateValidationUiHelpers": true,
+    "cleanupUnusedFiles": true,
+    "includeModels": [],
+    "excludeModels": [],
+    "generateValidationMessagesJson": true
+}

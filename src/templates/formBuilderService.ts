@@ -80,4 +80,8 @@ ${services.serviceScripts.toString()}
             return `${normalizedKey},`;
         return `${normalizedKey}, ...${normalizedKey}.Providers(), `;
     }
+
+    static getDirectProviderTemplate(key) {
+        return `${helpers.normalizeToFormBuilderName(key)}, `;
+    }
 }

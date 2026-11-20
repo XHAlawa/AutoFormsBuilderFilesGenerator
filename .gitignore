@@ -4,3 +4,5 @@ bin/*
 desktop.ini
 3-Month_Feature_Backlog_with_Details___Arabic_Preferences.csv
 /.npmrc
+test-fixtures/out*/
+test-fixtures/api/

@@ -1,7 +1,7 @@
 import { helpers } from "../helpers";
 
 export class arrayMethodsTemplate {
-    public static getTemplate(propName: string, arrayRef: string) {
+    public static getTemplate(propName: string, arrayRef: string, formBuilderGetter: string) {
         let normalizedName = helpers.normalizeToFormBuilderName(arrayRef);
         return`
     get ${propName}Value(): ${arrayRef}[] {
@@ -20,7 +20,7 @@ export class arrayMethodsTemplate {
       return (this.${propName}Array().controls[index] as any).__formGroupManager as ${normalizedName}
     }
     addNew${helpers.capitalizeFirstLetter(propName)}(model: ${arrayRef} | null = null): FormGroup<any> {
-        let formInstance =  this.InjectorSrvc.get(${normalizedName});
+        let formInstance =  ${formBuilderGetter};
         let frm = formInstance.buildForm(model);
         (frm as any).__formGroupManager = formInstance;
         this.${propName}Array().push(frm);

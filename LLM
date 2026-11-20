@@ -56,8 +56,16 @@ The generator reads a JSON configuration file (commonly `swagger.json`). The par
 - Housekeeping & filtering:
   - `cleanupUnusedFiles?`: remove obsolete generated form files.
   - `includeModels?: string[]`: whitelist of model names.
-  - `excludeModels?: string[]`: blacklist of model names.
+  - `excludeModels?: string[]`: blacklist of model names. Excluded models are not built, and any property (including `array.items`) that resolves through an excluded model is skipped, so no generated file imports a file that does not exist.
   - `generateValidationMessagesJson?`: emit `validation-messages.en.json` for i18n.
+
+## 3.1 Circular references
+
+`src/helpers/referenceGraph.ts` builds the schema reference graph once per run (it detects self references and cycles, and skips excluded models).
+
+- A nested `*FormBuilder` is injected in the parent constructor **only** when importing it would not create a static cycle.
+- When the property points back to the current model or would create a cycle (`A -> B -> A`), the generated code has **no** static import for the child builder; it resolves it at runtime with `this.InjectorSrvc.get(XFormBuilder)` and registers it with `formBuilderTemplate.getDirectProviderTemplate`.
+- `Builders/childFormBuilderReference.ts` is the single place that decides import vs Injector, and produces the `addNew*` getter expression used by `arrayMethodsTemplate`.
 
 Any AI changes to config-related code must respect backward-compatibility of these fields.
 

@@ -7,30 +7,39 @@ import { IParsedConfig } from './interfaces/IParsedConfig.js';
 import { IFormBuilderTemplate } from './templates/IFormBuilder'
 import { SchemaObject } from './interfaces/schemaObject.js';
 import { formsHelpers } from './templates/formsHelpers.js';
-import { showForErrorDirective } from './templates/showForErrorDirective';
+import { showForErrorDirective } from './templates/ShowForErrorDirective';
 import { validationManager } from './templates/validationManager';
-import { customeValidators } from './templates/customeValidators';
+import { customeValidators } from './templates/CustomeValidators';
 import { validationUiHelpersTemplate } from './templates/validationUiHelpers';
 import { autoFormsBuilderModuleTemplate } from './templates/autoFormsBuilderModule';
 import { formsExtensionsTemplate } from './templates/formsExtensions';
+import { helpers } from './helpers';
 
 export default class templateGenerator {
     buildForm(parsedConfig: IParsedConfig) {
 
         const cfg = parsedConfig;
         let components = parsedConfig.rootSchemas.components.schemas;
-        const builder = new templateBuilder(parsedConfig, components);
 
         const allKeys = Object.keys(components);
         let modelKeys = allKeys;
 
-        if (Array.isArray(cfg.includeModels) && cfg.includeModels.length > 0) {
-            modelKeys = modelKeys.filter(k => cfg.includeModels!.includes(k));
+        const includeModels = (cfg.includeModels ?? []).filter(x => x !== '*');
+        const excludeModels = cfg.excludeModels ?? [];
+        // '*' means exclude every model, only includeModels entries are generated
+        const excludeAll = excludeModels.includes('*');
+
+        if (includeModels.length > 0) {
+            modelKeys = modelKeys.filter(k => includeModels.includes(k));
         }
 
-        if (Array.isArray(cfg.excludeModels) && cfg.excludeModels.length > 0) {
-            modelKeys = modelKeys.filter(k => !cfg.excludeModels!.includes(k));
+        if (excludeAll) {
+            modelKeys = modelKeys.filter(k => includeModels.includes(k));
+        } else if (excludeModels.length > 0) {
+            modelKeys = modelKeys.filter(k => !excludeModels.includes(k));
         }
+
+        const builder = new templateBuilder(parsedConfig, components, modelKeys);
 
         modelKeys.forEach(key => {
             console.log("\n Working On : " + key); 
@@ -105,6 +114,11 @@ export default class templateGenerator {
             if (cfg.generateValidationUiHelpers ?? true) {
                 expectedFiles.add('ValidationUiHelpers.ts');
                 expectedFiles.add('AutoFormsBuilderModule.ts');
+                expectedFiles.add('FormsExtensions.d.ts');
+            }
+
+            if (cfg.generateValidationMessagesJson ?? true) {
+                expectedFiles.add('validation-messages.en.json');
             }
 
             const helperFiles = [
@@ -120,14 +134,25 @@ export default class templateGenerator {
             ];
 
             const outputDir = parsedConfig.formsOutput;
-            const files = fs.readdirSync(outputDir)
-                .filter(f => f.toLowerCase().endsWith('.ts'));
+            const files = fs.readdirSync(outputDir);
 
             let orphanRemovedCount = 0;
 
+            // Helper files are a stable runtime contract, a helper is removed only when
+            // its generation flag is turned off. Both .ts and .d.ts helpers are tracked.
+            const modelFileNames = allKeys.map(key => `${key}.ts`);
+
             if (cfg.cleanupUnusedFiles ?? true) {
                 files.forEach(file => {
-                    if (!expectedFiles.has(file)) {
+                    const isFormBuilderFile = /\.ts$/i.test(file)
+                        && !helpers.isGeneratedHelperFile(file)
+                        && modelFileNames.includes(file);
+
+                    const shouldRemove = isFormBuilderFile
+                        ? !expectedFiles.has(file)
+                        : (helpers.isGeneratedHelperFile(file) && !expectedFiles.has(file));
+
+                    if (shouldRemove) {
                         const fullPath = path.join(outputDir, file);
                         fs.unlinkSync(fullPath);
                         orphanRemovedCount++;
@@ -144,8 +169,9 @@ export default class templateGenerator {
             const modelFormCount = remainingFiles.length - helperCount;
 
             console.log('\nGeneration summary');
-            console.log(`\tModels in schema: ${modelKeys.length}`);
-
+            console.log(`\tModels in schema: ${allKeys.length}`);
+            console.log(`\tModels excluded: ${allKeys.length - modelKeys.length}`);
+            console.log(`\tModels processed: ${modelKeys.length}`);
             console.log(`\tForm builder files: ${modelFormCount}`);
             console.log(`\tHelper files: ${helperCount}`);
             console.log(`\tTotal .ts files in forms output: ${remainingFiles.length}`);

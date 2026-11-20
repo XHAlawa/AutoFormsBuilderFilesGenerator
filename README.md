@@ -191,7 +191,8 @@ Our tool specifically uses the properties below:
 - **generateValidationUiHelpers** (optional, default `true`): Control whether `ValidationUiHelpers.ts` (pipes + `<afb-validation-errors>` component and `afbAutoErrors` directive) is generated.
 - **cleanupUnusedFiles** (optional, default `true`): When `true`, remove `.ts` files under `formsOutput` that no longer correspond to current schema models or enabled helpers.
 - **includeModels** (optional): Array of model names to generate forms for. When set, only these models are processed.
-- **excludeModels** (optional): Array of model names to skip when generating forms.
+- **excludeModels** (optional, default `[]`): Array of model names to skip. Excluded models get no form builder file, and every property that resolves through an excluded model is skipped too, so generated code never imports a file that was not produced. Use `"excludeModels": ["*"]` to disable form builder generation entirely (helpers are still generated).
+- **Circular references**: A property that points back to the current model, or that would create a static import cycle (A -> B -> A), is resolved at runtime through `InjectorSrvc` instead of a static `import`. Nested form builders that are not part of a cycle keep the existing constructor injection.
 - **generateValidationMessagesJson** (optional, default `true`): When `true`, generate `validation-messages.en.json` containing default validation messages for easy integration with i18n tools.
 
 ---

@@ -1,0 +1,69 @@
+{
+    "components": {
+        "schemas": {
+            "Employee": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                    "id": { "type": "integer" },
+                    "name": { "type": "string" },
+                    "manager": { "$ref": "#/components/schemas/Employee" },
+                    "team": {
+                        "type": "array",
+                        "items": { "$ref": "#/components/schemas/Employee" }
+                    },
+                    "department": { "$ref": "#/components/schemas/Department" }
+                }
+            },
+            "Department": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer" },
+                    "title": { "type": "string" },
+                    "head": { "$ref": "#/components/schemas/Employee" },
+                    "address": { "$ref": "#/components/schemas/Address" }
+                }
+            },
+            "Project": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer" },
+                    "name": { "type": "string" }
+                }
+            },
+            "Task": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer" },
+                    "title": { "type": "string" },
+                    "project": { "$ref": "#/components/schemas/Project" },
+                    "labels": {
+                        "type": "array",
+                        "items": { "$ref": "#/components/schemas/Status" }
+                    }
+                }
+            },
+            "Customer": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer" },
+                    "addresses": {
+                        "type": "array",
+                        "items": { "$ref": "#/components/schemas/Address" }
+                    }
+                }
+            },
+            "Address": {
+                "type": "object",
+                "properties": {
+                    "city": { "type": "string" },
+                    "street": { "type": "string" }
+                }
+            },
+            "Status": {
+                "type": "string",
+                "enum": ["open", "closed", "pending"]
+            }
+        }
+    }
+}

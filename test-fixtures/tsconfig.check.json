@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "noEmit": true
+  },
+  "include": ["out/**/*.ts", "out-nested/**/*.ts", "out-only/**/*.ts", "api/**/*.ts"]
+}
+
+

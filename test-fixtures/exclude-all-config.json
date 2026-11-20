@@ -1,0 +1,21 @@
+{
+    "schemeFile": "./test-fixtures/cyclic-swagger.json",
+    "input": "",
+    "modelsPath": "./../api/models",
+    "formsOutput": "./test-fixtures/out-only",
+    "useEnumValuesAsString": false,
+    "useSignalFormTemplates": false,
+    "generateFormsHelpers": true,
+    "generateCustomValidators": true,
+    "generateValidationManager": true,
+    "generateShowForErrorDirective": true,
+    "generateIFormBuilder": true,
+    "generateDateHelper": true,
+    "generateEnumHelper": true,
+    "generateValidationUiHelpers": true,
+    "cleanupUnusedFiles": true,
+    "includeModels": ["Customer", "Task", "Status"],
+    "excludeModels": ["*"],
+    "generateValidationMessagesJson": true
+}
+
